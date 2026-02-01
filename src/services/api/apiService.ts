@@ -1,11 +1,9 @@
 /**
  * API Service Layer
- * Simulates backend API calls with mock data
- * In production, these would be actual HTTP requests to FastAPI backend
+ * Real HTTP requests to FastAPI backend
  */
 
 import { logger } from '@/utils/logger';
-import { sleep, generateId } from '@/utils/helpers';
 import type {
   User,
   Resume,
@@ -17,17 +15,60 @@ import type {
   SignupForm,
   JobPostingForm,
 } from '@/types/models';
-import {
-  dataStore,
-  getAllJobs,
-  getAllResumes,
-  getJobsByRecruiter,
-  getResumesByUser,
-  getMatchesByStudent,
-  getMatchesByRecruiter,
-  getMatchesByJob,
-} from './mockData';
-import { processResume, processJobDescription, executeResumeMatching, executeJobMatching } from '../ml/pipeline';
+
+// API Configuration
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+
+/**
+ * Generic API request helper
+ */
+async function apiRequest<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<APIResponse<T>> {
+  const url = `${API_BASE_URL}${endpoint}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.error || `HTTP ${response.status}: ${response.statusText}`,
+        timestamp: new Date().toISOString(),
+      };
+    }
+
+    return {
+      success: true,
+      data: data.data,
+      timestamp: data.timestamp || new Date().toISOString(),
+    };
+  } catch (error) {
+    logger.error('API request failed', { endpoint, error });
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Network error',
+      timestamp: new Date().toISOString(),
+    };
+  }
+}
+
+/**
+ * Get authorization header with JWT token
+ */
+function getAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem('access_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 /**
  * Authentication API
@@ -35,95 +76,55 @@ import { processResume, processJobDescription, executeResumeMatching, executeJob
 export const authAPI = {
   async login(credentials: LoginForm): Promise<APIResponse<User>> {
     logger.info('API: Login attempt', { email: credentials.email });
-    await sleep(500); // Simulate network delay
 
-    const user = Array.from(dataStore.users.values()).find(
-      u => u.email === credentials.email && u.role === credentials.role
-    );
+    const response = await apiRequest<User>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
 
-    if (!user) {
-      return {
-        success: false,
-        error: 'Invalid credentials',
-        timestamp: new Date().toISOString(),
-      };
+    if (response.success && response.data) {
+      // Store token in localStorage
+      localStorage.setItem('access_token', 'dummy_token'); // TODO: Get from response
+      localStorage.setItem('current_user', JSON.stringify(response.data));
     }
 
-    // Store user in session
-    sessionStorage.setItem('currentUser', JSON.stringify(user));
-
-    return {
-      success: true,
-      data: user,
-      timestamp: new Date().toISOString(),
-    };
+    return response;
   },
 
   async signup(formData: SignupForm): Promise<APIResponse<User>> {
     logger.info('API: Signup attempt', { email: formData.email });
-    await sleep(500);
 
-    // Check if user already exists
-    const existingUser = Array.from(dataStore.users.values()).find(
-      u => u.email === formData.email
-    );
+    const response = await apiRequest<User>('/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify(formData),
+    });
 
-    if (existingUser) {
-      return {
-        success: false,
-        error: 'Email already registered',
-        timestamp: new Date().toISOString(),
-      };
+    if (response.success && response.data) {
+      // Store token in localStorage
+      localStorage.setItem('access_token', 'dummy_token'); // TODO: Get from response
+      localStorage.setItem('current_user', JSON.stringify(response.data));
     }
 
-    // Create new user
-    const userId = generateId();
-    const newUser: User = {
-      id: userId,
-      email: formData.email,
-      name: formData.name,
-      role: formData.role,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    dataStore.users.set(userId, newUser);
-
-    // Create profile based on role
-    if (formData.role === 'student') {
-      dataStore.studentProfiles.set(userId, {
-        ...newUser,
-        role: 'student',
-      });
-    } else if (formData.role === 'recruiter') {
-      dataStore.recruiterProfiles.set(userId, {
-        ...newUser,
-        role: 'recruiter',
-        company: 'Company Name', // Would be collected in signup form
-      });
-    }
-
-    sessionStorage.setItem('currentUser', JSON.stringify(newUser));
-
-    return {
-      success: true,
-      data: newUser,
-      timestamp: new Date().toISOString(),
-    };
+    return response;
   },
 
   async logout(): Promise<APIResponse<void>> {
     logger.info('API: Logout');
-    sessionStorage.removeItem('currentUser');
 
-    return {
-      success: true,
-      timestamp: new Date().toISOString(),
-    };
+    const response = await apiRequest<void>('/auth/logout', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+    });
+
+    // Clear stored data
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('current_user');
+
+    return response;
   },
 
   getCurrentUser(): User | null {
-    const userJson = sessionStorage.getItem('currentUser');
+    const userJson = localStorage.getItem('current_user');
     return userJson ? JSON.parse(userJson) : null;
   },
 };
@@ -135,48 +136,36 @@ export const resumeAPI = {
   async upload(file: File, userId: string): Promise<APIResponse<Resume>> {
     logger.info('API: Uploading resume', { fileName: file.name, userId });
 
-    try {
-      // Process resume through ML pipeline
-      const result = await processResume(file, userId);
+    const formData = new FormData();
+    formData.append('file', file);
 
-      if (result.status === 'failed') {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resumes/upload`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
         return {
           success: false,
-          error: result.error || 'Failed to process resume',
+          error: data.error || `HTTP ${response.status}: ${response.statusText}`,
           timestamp: new Date().toISOString(),
         };
       }
 
-      // Create resume record
-      const resume: Resume = {
-        id: result.resumeId,
-        userId,
-        fileName: file.name,
-        fileUrl: URL.createObjectURL(file),
-        fileSize: file.size,
-        uploadedAt: new Date(),
-        extractedText: result.extractedText,
-        extractedSkills: result.skills,
-        education: result.education,
-        experience: result.experience,
-        embeddingVector: result.embedding,
-        status: 'completed',
-      };
-
-      dataStore.resumes.set(resume.id, resume);
-
-      logger.info('Resume uploaded successfully', { resumeId: resume.id });
-
       return {
         success: true,
-        data: resume,
-        timestamp: new Date().toISOString(),
+        data: data.data,
+        timestamp: data.timestamp || new Date().toISOString(),
       };
     } catch (error) {
       logger.error('Resume upload failed', error as Error);
       return {
         success: false,
-        error: 'Failed to upload resume',
+        error: error instanceof Error ? error.message : 'Upload failed',
         timestamp: new Date().toISOString(),
       };
     }
@@ -184,48 +173,27 @@ export const resumeAPI = {
 
   async getByUser(userId: string): Promise<APIResponse<Resume[]>> {
     logger.info('API: Getting resumes for user', { userId });
-    await sleep(300);
 
-    const resumes = getResumesByUser(userId);
-
-    return {
-      success: true,
-      data: resumes,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Resume[]>(`/resumes/user/${userId}`, {
+      headers: getAuthHeaders(),
+    });
   },
 
   async getById(resumeId: string): Promise<APIResponse<Resume>> {
     logger.info('API: Getting resume by ID', { resumeId });
-    await sleep(200);
 
-    const resume = dataStore.resumes.get(resumeId);
-
-    if (!resume) {
-      return {
-        success: false,
-        error: 'Resume not found',
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    return {
-      success: true,
-      data: resume,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Resume>(`/resumes/${resumeId}`, {
+      headers: getAuthHeaders(),
+    });
   },
 
   async delete(resumeId: string): Promise<APIResponse<void>> {
     logger.info('API: Deleting resume', { resumeId });
-    await sleep(200);
 
-    dataStore.resumes.delete(resumeId);
-
-    return {
-      success: true,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<void>(`/resumes/${resumeId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
   },
 };
 
@@ -236,144 +204,70 @@ export const jobAPI = {
   async create(jobData: JobPostingForm, recruiterId: string): Promise<APIResponse<Job>> {
     logger.info('API: Creating job posting', { title: jobData.title });
 
-    try {
-      // Process job through ML pipeline
-      const result = await processJobDescription({
-        title: jobData.title,
-        description: jobData.description,
-        requiredSkills: jobData.requiredSkills,
-      });
+    const payload = {
+      title: jobData.title,
+      company: jobData.company,
+      description: jobData.description,
+      requiredSkills: jobData.requiredSkills,
+      preferredSkills: jobData.preferredSkills,
+      experienceLevel: jobData.experienceLevel,
+      location: jobData.location,
+      locationType: jobData.locationType,
+      salary: jobData.salaryMin && jobData.salaryMax ? {
+        min: jobData.salaryMin,
+        max: jobData.salaryMax,
+        currency: jobData.salaryCurrency,
+      } : undefined,
+    };
 
-      if (result.status === 'failed') {
-        return {
-          success: false,
-          error: result.error || 'Failed to process job',
-          timestamp: new Date().toISOString(),
-        };
-      }
-
-      // Create job record
-      const job: Job = {
-        id: result.jobId,
-        recruiterId,
-        title: jobData.title,
-        company: jobData.company,
-        description: jobData.description,
-        requiredSkills: jobData.requiredSkills,
-        preferredSkills: jobData.preferredSkills,
-        experienceLevel: jobData.experienceLevel,
-        location: jobData.location,
-        locationType: jobData.locationType,
-        salary: jobData.salaryMin && jobData.salaryMax ? {
-          min: jobData.salaryMin,
-          max: jobData.salaryMax,
-          currency: jobData.salaryCurrency,
-        } : undefined,
-        postedAt: new Date(),
-        status: 'active',
-        embeddingVector: result.embedding,
-      };
-
-      dataStore.jobs.set(job.id, job);
-
-      logger.info('Job created successfully', { jobId: job.id });
-
-      return {
-        success: true,
-        data: job,
-        timestamp: new Date().toISOString(),
-      };
-    } catch (error) {
-      logger.error('Job creation failed', error as Error);
-      return {
-        success: false,
-        error: 'Failed to create job',
-        timestamp: new Date().toISOString(),
-      };
-    }
+    return apiRequest<Job>('/jobs', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload),
+    });
   },
 
   async getByRecruiter(recruiterId: string): Promise<APIResponse<Job[]>> {
     logger.info('API: Getting jobs for recruiter', { recruiterId });
-    await sleep(300);
 
-    const jobs = getJobsByRecruiter(recruiterId);
-
-    return {
-      success: true,
-      data: jobs,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Job[]>(`/jobs/recruiter/${recruiterId}`, {
+      headers: getAuthHeaders(),
+    });
   },
 
   async getAll(): Promise<APIResponse<Job[]>> {
     logger.info('API: Getting all jobs');
-    await sleep(300);
 
-    const jobs = getAllJobs();
-
-    return {
-      success: true,
-      data: jobs,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Job[]>('/jobs', {
+      headers: getAuthHeaders(),
+    });
   },
 
   async getById(jobId: string): Promise<APIResponse<Job>> {
     logger.info('API: Getting job by ID', { jobId });
-    await sleep(200);
 
-    const job = dataStore.jobs.get(jobId);
-
-    if (!job) {
-      return {
-        success: false,
-        error: 'Job not found',
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    return {
-      success: true,
-      data: job,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Job>(`/jobs/${jobId}`, {
+      headers: getAuthHeaders(),
+    });
   },
 
   async update(jobId: string, updates: Partial<Job>): Promise<APIResponse<Job>> {
     logger.info('API: Updating job', { jobId });
-    await sleep(300);
 
-    const job = dataStore.jobs.get(jobId);
-
-    if (!job) {
-      return {
-        success: false,
-        error: 'Job not found',
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    const updatedJob = { ...job, ...updates, updatedAt: new Date() } as Job;
-    dataStore.jobs.set(jobId, updatedJob);
-
-    return {
-      success: true,
-      data: updatedJob,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Job>(`/jobs/${jobId}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(updates),
+    });
   },
 
   async delete(jobId: string): Promise<APIResponse<void>> {
     logger.info('API: Deleting job', { jobId });
-    await sleep(200);
 
-    dataStore.jobs.delete(jobId);
-
-    return {
-      success: true,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<void>(`/jobs/${jobId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
   },
 };
 
