@@ -1,22 +1,4 @@
-version: '3.8'
-
-services:
-  # Frontend
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3000:80"
-    environment:
-      - VITE_API_BASE_URL=http://backend:8000
-    depends_on:
-      - backend
-    networks:
-      - app-network
-
-  # Backend API (Placeholder - to be implemented)
-  backend:
+backend:
     image: python:3.11-slim
     working_dir: /app
     command: >
@@ -34,49 +16,28 @@ services:
       - redis
     networks:
       - app-network
-
-  # PostgreSQL Database
-  db:
-    image: pgvector/pgvector:pg16
-    environment:
-      - POSTGRES_DB=resume_matcher
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+=======
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "5432:5432"
+      - "8000:8000"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./src/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-    networks:
-      - app-network
-
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - app-network
-
-  # pgAdmin (Optional - Database Management)
-  pgadmin:
-    image: dpage/pgadmin4:latest
+      - ./backend:/app
+      - /app/__pycache__
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@example.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-    ports:
-      - "5050:80"
+      - DATABASE_URL=postgresql://postgres:password@db:5432/resume_matcher
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=your-secret-key-here-change-in-production
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - CORS_ORIGINS=["http://localhost:3000", "http://frontend:80"]
+      - DEBUG=true
+      - API_V1_PREFIX=/api/v1
     depends_on:
       - db
+      - redis
     networks:
       - app-network
-
-volumes:
-  postgres_data:
-  redis_data:
-
-networks:
-  app-network:
-    driver: bridge
