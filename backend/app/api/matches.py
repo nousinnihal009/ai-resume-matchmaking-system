@@ -1,0 +1,268 @@
+"""
+Match API routes.
+"""
+import logging
+from typing import List
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from ..db.session import get_db
+from ..services.match_service import MatchService
+from ..services.user_service import UserService
+from ..schemas.match import MatchBase, MatchUpdate
+from ..schemas.user import UserBase
+from ..schemas.base import APIResponse
+from ..core.security import get_current_user
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter()
+
+
+@router.post("/resume/{resume_id}", response_model=APIResponse[List[MatchBase]])
+async def match_resume_to_jobs(
+    resume_id: UUID,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[List[MatchBase]]:
+    """Find matching jobs for a resume."""
+    try:
+        # Validate user permissions (students can match their own resumes, admins can match any)
+        if current_user.role not in ["admin", "student"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to perform matching"
+            )
+
+        # If student, check if they own the resume
+        if current_user.role == "student":
+            user_service = UserService(db)
+            resumes = await user_service.get_resumes_by_user(current_user.id)
+            resume_ids = [str(r.id) for r in resumes]
+            if str(resume_id) not in resume_ids:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Not authorized to match this resume"
+                )
+
+        match_service = MatchService(db)
+        matches = await match_service.match_resume_to_jobs(resume_id)
+
+        match_data = [MatchBase.from_orm(match) for match in matches]
+
+        return APIResponse(
+            success=True,
+            data=match_data,
+            message=f"Found {len(match_data)} job matches"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Match resume to jobs error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+@router.post("/job/{job_id}", response_model=APIResponse[List[MatchBase]])
+async def match_job_to_candidates(
+    job_id: UUID,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[List[MatchBase]]:
+    """Find matching candidates for a job."""
+    try:
+        # Validate user permissions (recruiters can match their own jobs, admins can match any)
+        if current_user.role not in ["admin", "recruiter"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to perform matching"
+            )
+
+        # If recruiter, check if they own the job
+        if current_user.role == "recruiter":
+            user_service = UserService(db)
+            jobs = await user_service.get_jobs_by_recruiter(current_user.id)
+            job_ids = [str(j.id) for j in jobs]
+            if str(job_id) not in job_ids:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Not authorized to match this job"
+                )
+
+        match_service = MatchService(db)
+        matches = await match_service.match_job_to_candidates(job_id)
+
+        match_data = [MatchBase.from_orm(match) for match in matches]
+
+        return APIResponse(
+            success=True,
+            data=match_data,
+            message=f"Found {len(match_data)} candidate matches"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Match job to candidates error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+@router.get("/student/{student_id}", response_model=APIResponse[List[MatchBase]])
+async def get_student_matches(
+    student_id: UUID,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[List[MatchBase]]:
+    """Get all matches for a student."""
+    try:
+        # Check permissions (students can only see their own matches, admins can see all)
+        if current_user.role not in ["admin"] and current_user.id != student_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to view these matches"
+            )
+
+        match_service = MatchService(db)
+        matches = await match_service.get_matches_by_student(student_id)
+
+        match_data = [MatchBase.from_orm(match) for match in matches]
+
+        return APIResponse(
+            success=True,
+            data=match_data,
+            message=f"Found {len(match_data)} matches"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get student matches error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+@router.get("/recruiter/{recruiter_id}", response_model=APIResponse[List[MatchBase]])
+async def get_recruiter_matches(
+    recruiter_id: UUID,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[List[MatchBase]]:
+    """Get all matches for a recruiter's jobs."""
+    try:
+        # Check permissions (recruiters can only see their own matches, admins can see all)
+        if current_user.role not in ["admin"] and current_user.id != recruiter_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to view these matches"
+            )
+
+        match_service = MatchService(db)
+        matches = await match_service.get_matches_by_recruiter(recruiter_id)
+
+        match_data = [MatchBase.from_orm(match) for match in matches]
+
+        return APIResponse(
+            success=True,
+            data=match_data,
+            message=f"Found {len(match_data)} matches"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get recruiter matches error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+@router.get("/job/{job_id}", response_model=APIResponse[List[MatchBase]])
+async def get_job_matches(
+    job_id: UUID,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[List[MatchBase]]:
+    """Get all matches for a specific job."""
+    try:
+        match_service = MatchService(db)
+        matches = await match_service.get_matches_by_job(job_id)
+
+        match_data = [MatchBase.from_orm(match) for match in matches]
+
+        return APIResponse(
+            success=True,
+            data=match_data,
+            message=f"Found {len(match_data)} matches"
+        )
+
+    except Exception as e:
+        logger.error(f"Get job matches error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+@router.patch("/{match_id}/status", response_model=APIResponse[MatchBase])
+async def update_match_status(
+    match_id: UUID,
+    status_data: MatchUpdate,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[MatchBase]:
+    """Update match status."""
+    try:
+        match_service = MatchService(db)
+        match = await match_service.get_match_by_id(match_id)
+
+        if not match:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Match not found"
+            )
+
+        # Check permissions (students can update their own matches, recruiters can update matches for their jobs, admins can update all)
+        can_update = (
+            current_user.role == "admin" or
+            (current_user.role == "student" and match.student_id == current_user.id) or
+            (current_user.role == "recruiter" and match.recruiter_id == current_user.id)
+        )
+
+        if not can_update:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to update this match"
+            )
+
+        updated_match = await match_service.update_match_status(match_id, status_data.status)
+        if not updated_match:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to update match status"
+            )
+
+        return APIResponse(
+            success=True,
+            data=MatchBase.from_orm(updated_match),
+            message="Match status updated successfully"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Update match status error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )

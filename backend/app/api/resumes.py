@@ -1,0 +1,198 @@
+"""
+Resume API routes.
+"""
+import logging
+from typing import List
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from ..db.session import get_db
+from ..services.resume_service import ResumeService
+from ..services.user_service import UserService
+from ..schemas.resume import ResumeBase, ResumeUploadResponse
+from ..schemas.user import UserBase
+from ..schemas.base import APIResponse
+from ..core.security import get_current_user
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter()
+
+
+@router.post("/upload", response_model=APIResponse[ResumeUploadResponse])
+async def upload_resume(
+    file: UploadFile = File(...),
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[ResumeUploadResponse]:
+    """Upload and process a resume file."""
+    try:
+        # Validate user is a student
+        if current_user.role != "student":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Only students can upload resumes"
+            )
+
+        # Read file content
+        file_content = await file.read()
+
+        # Process resume
+        resume_service = ResumeService(db)
+        resume = await resume_service.upload_resume(
+            file_content=file_content,
+            filename=file.filename,
+            user_id=current_user.id
+        )
+
+        if not resume:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Failed to process resume"
+            )
+
+        # Create response
+        response_data = ResumeUploadResponse(
+            resume=ResumeBase.from_orm(resume),
+            processing_status="completed"
+        )
+
+        return APIResponse(
+            success=True,
+            data=response_data,
+            message="Resume uploaded and processed successfully"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Resume upload error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+@router.get("/user/{user_id}", response_model=APIResponse[List[ResumeBase]])
+async def get_user_resumes(
+    user_id: UUID,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[List[ResumeBase]]:
+    """Get all resumes for a user."""
+    try:
+        # Check permissions (users can only see their own resumes, admins can see all)
+        if current_user.role not in ["admin"] and current_user.id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to view these resumes"
+            )
+
+        resume_service = ResumeService(db)
+        resumes = await resume_service.get_resumes_by_user(user_id)
+
+        resume_data = [ResumeBase.from_orm(resume) for resume in resumes]
+
+        return APIResponse(
+            success=True,
+            data=resume_data,
+            message=f"Found {len(resume_data)} resumes"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get user resumes error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+@router.get("/{resume_id}", response_model=APIResponse[ResumeBase])
+async def get_resume(
+    resume_id: UUID,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[ResumeBase]:
+    """Get a specific resume by ID."""
+    try:
+        resume_service = ResumeService(db)
+        resume = await resume_service.get_resume_by_id(resume_id)
+
+        if not resume:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Resume not found"
+            )
+
+        # Check permissions
+        if current_user.role not in ["admin"] and resume.user_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to view this resume"
+            )
+
+        return APIResponse(
+            success=True,
+            data=ResumeBase.from_orm(resume),
+            message="Resume retrieved successfully"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get resume error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+@router.delete("/{resume_id}", response_model=APIResponse[dict])
+async def delete_resume(
+    resume_id: UUID,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[dict]:
+    """Delete a resume."""
+    try:
+        resume_service = ResumeService(db)
+        resume = await resume_service.get_resume_by_id(resume_id)
+
+        if not resume:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Resume not found"
+            )
+
+        # Check permissions
+        if current_user.role not in ["admin"] and resume.user_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to delete this resume"
+            )
+
+        success = await resume_service.delete_resume(resume_id)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to delete resume"
+            )
+
+        return APIResponse(
+            success=True,
+            data={},
+            message="Resume deleted successfully"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Delete resume error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
