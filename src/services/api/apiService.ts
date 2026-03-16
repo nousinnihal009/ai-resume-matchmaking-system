@@ -6,6 +6,7 @@
 import { logger } from '@/utils/logger';
 import type {
   User,
+  AuthResponse,
   Resume,
   Job,
   Match,
@@ -74,35 +75,35 @@ function getAuthHeaders(): Record<string, string> {
  * Authentication API
  */
 export const authAPI = {
-  async login(credentials: LoginForm): Promise<APIResponse<User>> {
+  async login(credentials: LoginForm): Promise<APIResponse<AuthResponse>> {
     logger.info('API: Login attempt', { email: credentials.email });
 
-    const response = await apiRequest<User>('/auth/login', {
+    const response = await apiRequest<AuthResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
 
     if (response.success && response.data) {
-      // Store token in localStorage
-      localStorage.setItem('access_token', 'dummy_token'); // TODO: Get from response
-      localStorage.setItem('current_user', JSON.stringify(response.data));
+      // Store token from API response
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('current_user', JSON.stringify(response.data.user));
     }
 
     return response;
   },
 
-  async signup(formData: SignupForm): Promise<APIResponse<User>> {
+  async signup(formData: SignupForm): Promise<APIResponse<AuthResponse>> {
     logger.info('API: Signup attempt', { email: formData.email });
 
-    const response = await apiRequest<User>('/auth/signup', {
+    const response = await apiRequest<AuthResponse>('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(formData),
     });
 
     if (response.success && response.data) {
-      // Store token in localStorage
-      localStorage.setItem('access_token', 'dummy_token'); // TODO: Get from response
-      localStorage.setItem('current_user', JSON.stringify(response.data));
+      // Store token from API response
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('current_user', JSON.stringify(response.data.user));
     }
 
     return response;

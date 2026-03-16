@@ -1,22 +1,4 @@
-backend:
-    image: python:3.11-slim
-    working_dir: /app
-    command: >
-      sh -c "pip install fastapi uvicorn sentence-transformers &&
-             uvicorn main:app --host 0.0.0.0 --port 8000"
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/resume_matcher
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - db
-      - redis
-    networks:
-      - app-network
-=======
+services:
   # Backend API
   backend:
     build:
@@ -28,16 +10,76 @@ backend:
       - ./backend:/app
       - /app/__pycache__
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/resume_matcher
-      - REDIS_URL=redis://redis:6379
-      - SECRET_KEY=your-secret-key-here-change-in-production
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
-      - CORS_ORIGINS=["http://localhost:3000", "http://frontend:80"]
-      - DEBUG=true
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/resume_matcher}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set in .env}
+      - ALGORITHM=${ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - CORS_ORIGINS=${CORS_ORIGINS:-["http://localhost:3000","http://frontend:80"]}
+      - DEBUG=${DEBUG:-false}
       - API_V1_PREFIX=/api/v1
     depends_on:
       - db
       - redis
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+      - POSTGRES_DB=${POSTGRES_DB:-resume_matcher}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-LINE", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

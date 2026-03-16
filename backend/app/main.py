@@ -2,10 +2,12 @@
 Main FastAPI application.
 """
 import logging
+from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
 from .core.config import settings
 from .api import auth, resumes, jobs, matches, analytics
@@ -58,8 +60,26 @@ app.add_middleware(
 # Health check endpoint
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
+    """Health check endpoint for liveness probes."""
     return {"status": "healthy", "version": settings.version}
+
+
+# Readiness check endpoint
+@app.get("/ready")
+async def readiness_check():
+    """Readiness check endpoint for deployment orchestration."""
+    checks = {"api": "ok"}
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+        checks["database"] = "ok"
+    except Exception:
+        checks["database"] = "unavailable"
+        return JSONResponse(
+            status_code=503,
+            content={"status": "not_ready", "checks": checks, "version": settings.version}
+        )
+    return {"status": "ready", "checks": checks, "version": settings.version}
 
 
 # API routes
@@ -81,7 +101,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={
             "success": False,
             "error": "Internal server error",
-            "timestamp": "2025-01-31T12:00:00Z"
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     )
 

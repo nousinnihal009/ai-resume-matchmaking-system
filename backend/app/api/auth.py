@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..db.session import get_db
 from ..services.user_service import UserService
-from ..schemas.user import UserBase, LoginRequest, SignupRequest
+from ..schemas.user import UserBase, LoginRequest, SignupRequest, AuthResponse
 from ..schemas.base import APIResponse
 from ..core.security import create_access_token, get_current_user
 from ..core.config import settings
@@ -20,11 +20,11 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.post("/login", response_model=APIResponse[UserBase])
+@router.post("/login", response_model=APIResponse)
 async def login(
     login_data: LoginRequest,
     db: AsyncSession = Depends(get_db)
-) -> APIResponse[UserBase]:
+):
     """Authenticate user and return access token."""
     try:
         user_service = UserService(db)
@@ -52,16 +52,18 @@ async def login(
             expires_delta=access_token_expires
         )
 
-        # Return user data with token (in a real app, you'd return token separately)
         user_data = UserBase.from_orm(user)
 
         logger.info(f"User {user.email} logged in successfully")
 
         return APIResponse(
             success=True,
-            data=user_data,
+            data=AuthResponse(
+                user=user_data,
+                access_token=access_token,
+                token_type="bearer"
+            ).dict(),
             message="Login successful",
-            # In production, return token in response or set as cookie
         )
 
     except HTTPException:
@@ -74,11 +76,11 @@ async def login(
         )
 
 
-@router.post("/signup", response_model=APIResponse[UserBase])
+@router.post("/signup", response_model=APIResponse)
 async def signup(
     signup_data: SignupRequest,
     db: AsyncSession = Depends(get_db)
-) -> APIResponse[UserBase]:
+):
     """Create a new user account."""
     try:
         # Validate passwords match
@@ -126,7 +128,11 @@ async def signup(
 
         return APIResponse(
             success=True,
-            data=user_response,
+            data=AuthResponse(
+                user=user_response,
+                access_token=access_token,
+                token_type="bearer"
+            ).dict(),
             message="Account created successfully"
         )
 
