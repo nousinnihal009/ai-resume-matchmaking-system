@@ -414,6 +414,8 @@ To make this production-ready, implement:
 
 ## 📚 Additional Documentation
 
+- [Project Summary & Roadmap](./PROJECT_SUMMARY.md) - Complete audit, fixes, and enterprise feature roadmap
+- [Deployment Readiness Report](./DEPLOYMENT_READINESS.md) - Production readiness checklist
 - [API Documentation](./docs/API.md) - Endpoint specifications
 - [ML Pipeline](./docs/ML_PIPELINE.md) - Deep dive into algorithms
 - [Deployment Guide](./docs/DEPLOYMENT.md) - Production setup

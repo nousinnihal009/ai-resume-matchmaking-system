@@ -28,12 +28,17 @@ Authenticate a user and create a session.
 {
   "success": true,
   "data": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "name": "John Doe",
-    "role": "student",
-    "createdAt": "2025-01-01T00:00:00Z"
+    "user": {
+      "id": "uuid",
+      "email": "user@example.com",
+      "name": "John Doe",
+      "role": "student",
+      "createdAt": "2025-01-01T00:00:00Z"
+    },
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token_type": "bearer"
   },
+  "message": "Login successful",
   "timestamp": "2025-01-31T12:00:00Z"
 }
 ```
@@ -52,7 +57,7 @@ Create a new user account.
 }
 ```
 
-**Response:** Same as login
+**Response:** Same structure as login (with `"message": "Account created successfully"`)
 
 ### POST /auth/logout
 
