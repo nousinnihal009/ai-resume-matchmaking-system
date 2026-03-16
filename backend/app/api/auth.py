@@ -62,7 +62,7 @@ async def login(
                 user=user_data,
                 access_token=access_token,
                 token_type="bearer"
-            ).dict(),
+            ).model_dump(),
             message="Login successful",
         )
 
@@ -132,7 +132,7 @@ async def signup(
                 user=user_response,
                 access_token=access_token,
                 token_type="bearer"
-            ).dict(),
+            ).model_dump(),
             message="Account created successfully"
         )
 
