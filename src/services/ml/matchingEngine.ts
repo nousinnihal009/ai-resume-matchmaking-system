@@ -1,8 +1,6 @@
-/**
- * Matching Engine
- * Core ML service for matching resumes to jobs
- */
-
+// CLIENT-SIDE ML — preserved for reference and offline development only.
+// Live matching runs on the backend via POST /api/v1/matches/resume/{id}.
+// This file is NOT called in production data flows.
 import { logger } from '@/utils/logger';
 import { AppConfig } from '@/config/app.config';
 import { cosineSimilarity } from './embeddings';
