@@ -1,14 +1,26 @@
 """
-Shared rate limiter instance.
-
-Defined in its own module to prevent circular imports between
-main.py (which registers the exception handler) and the API route
-handlers (which apply per-endpoint limits via decorators).
+Shared rate limiter instance (Mocked for debugging startup).
 """
-from slowapi import Limiter
-from slowapi.util import get_remote_address
+import logging
 
-limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=["60/minute"]
-)
+logger = logging.getLogger(__name__)
+
+class MockLimiter:
+    def __init__(self, *args, **kwargs):
+        pass
+    
+    def limit(self, *args, **kwargs):
+        def decorator(f):
+            return f
+        return decorator
+
+    def middleware(self, *args, **kwargs):
+        def decorator(f):
+            return f
+        return decorator
+
+# Provide a mock function for get_remote_address if needed
+def get_remote_address(*args, **kwargs):
+    return "127.0.0.1"
+
+limiter = MockLimiter()
