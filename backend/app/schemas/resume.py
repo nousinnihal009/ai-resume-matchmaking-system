@@ -42,7 +42,7 @@ class ResumeBase(BaseSchema):
     education: List[Education] = Field(default_factory=list)
     experience: List[Experience] = Field(default_factory=list)
     status: str  # 'processing' | 'completed' | 'failed'
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    extra_metadata: Dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
     updated_at: datetime
 
@@ -59,7 +59,7 @@ class ResumeUpdate(BaseModel):
     education: Optional[List[Education]] = None
     experience: Optional[List[Experience]] = None
     status: Optional[str] = Field(None, pattern="^(processing|completed|failed)$")
-    metadata: Optional[Dict[str, Any]] = None
+    extra_metadata: Optional[Dict[str, Any]] = None
 
 
 class ResumeUploadResponse(BaseSchema):
