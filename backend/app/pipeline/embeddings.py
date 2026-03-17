@@ -3,9 +3,14 @@ Embeddings pipeline for text vectorization.
 """
 import logging
 from typing import List, Optional, Any
-import numpy as np
 
 logger = logging.getLogger(__name__)
+
+
+def _get_numpy():
+    """Lazy import numpy to avoid startup hang on Windows/MINGW builds."""
+    import numpy as np
+    return np
 
 
 class EmbeddingService:
@@ -15,21 +20,6 @@ class EmbeddingService:
         """Initialize the embedding service."""
         self.model = None
         self.dimension = 384  # Default dimension for sentence-transformers models
-        self._initialize_model()
-
-    def _initialize_model(self):
-        """Initialize the embedding model."""
-        try:
-            # Placeholder for model initialization
-            # In production, you would load a real model:
-            # from sentence_transformers import SentenceTransformer
-            # self.model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-            # self.dimension = self.model.get_sentence_embedding_dimension()
-
-            logger.info("Embedding service initialized (placeholder)")
-        except Exception as e:
-            logger.error(f"Failed to initialize embedding model: {e}")
-            self.model = None
 
     async def embed_text(self, text: str) -> Optional[List[float]]:
         """
@@ -48,10 +38,6 @@ class EmbeddingService:
             if not self.model:
                 # Return a placeholder embedding for development
                 return self._generate_placeholder_embedding(text)
-
-            # Real implementation would be:
-            # embedding = self.model.encode(text, convert_to_numpy=True)
-            # return embedding.tolist()
 
             return self._generate_placeholder_embedding(text)
 
@@ -88,6 +74,8 @@ class EmbeddingService:
         In production, this would be replaced with real embeddings.
         """
         try:
+            np = _get_numpy()
+
             # Create a deterministic embedding based on text content
             text_hash = hash(text) % 1000000
             np.random.seed(text_hash)
@@ -121,6 +109,8 @@ class EmbeddingService:
         try:
             if not vec1 or not vec2 or len(vec1) != len(vec2):
                 return 0.0
+
+            np = _get_numpy()
 
             # Convert to numpy arrays
             v1 = np.array(vec1)
@@ -158,6 +148,8 @@ class EmbeddingService:
             if not vec1 or not vec2 or len(vec1) != len(vec2):
                 return float('inf')
 
+            np = _get_numpy()
+
             v1 = np.array(vec1)
             v2 = np.array(vec2)
 
@@ -181,6 +173,8 @@ class EmbeddingService:
         try:
             if not vec1 or not vec2 or len(vec1) != len(vec2):
                 return 0.0
+
+            np = _get_numpy()
 
             return np.dot(vec1, vec2)
 
