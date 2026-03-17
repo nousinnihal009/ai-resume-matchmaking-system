@@ -9,12 +9,13 @@ from uuid import UUID
 
 class BaseSchema(BaseModel):
     """Base schema with common configurations."""
-    class Config:
-        from_attributes = True
-        json_encoders = {
+    model_config = {
+        "from_attributes": True,
+        "json_encoders": {
             datetime: lambda v: v.isoformat(),
             UUID: str,
         }
+    }
 
 
 class APIResponse(BaseSchema):
