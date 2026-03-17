@@ -27,7 +27,7 @@ class JobBase(BaseSchema):
     posted_at: datetime
     expires_at: Optional[datetime] = None
     status: str  # 'active' | 'closed' | 'draft'
-    metadata: dict = Field(default_factory=dict)
+    extra_metadata: dict = Field(default_factory=dict)
     created_at: datetime
     updated_at: datetime
 
@@ -62,7 +62,7 @@ class JobUpdate(BaseModel):
     salary_currency: Optional[str] = Field(None, min_length=3, max_length=3)
     status: Optional[str] = Field(None, pattern="^(active|closed|draft)$")
     expires_at: Optional[datetime] = None
-    metadata: Optional[dict] = None
+    extra_metadata: Optional[dict] = None
 
 
 class JobPostingForm(BaseModel):
