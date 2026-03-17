@@ -34,7 +34,7 @@ import { matchAPI, resumeAPI, jobAPI } from '@/services/api/apiService';
 export function RecruiterDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const { jobs, isLoading: jobsLoading, createJob } = useJobs(user?.id);
+  const { jobs, isLoading: jobsLoading, error: jobsError, createJob } = useJobs(user?.id);
   const { matches, isLoading: matchesLoading, matchJob } = useMatches(user?.id, 'recruiter');
   const [isCreatingJob, setIsCreatingJob] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -165,6 +165,12 @@ export function RecruiterDashboard() {
                 Post New Job
               </Button>
             </div>
+
+            {jobsError && (
+              <div className="rounded-md bg-destructive/10 p-4 text-sm text-destructive mb-4">
+                {jobsError}
+              </div>
+            )}
 
             {jobsLoading ? (
               <div className="flex items-center justify-center py-12">
