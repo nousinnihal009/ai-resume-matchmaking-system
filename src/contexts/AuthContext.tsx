@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await authAPI.login(credentials);
 
       if (response.success && response.data) {
-        setUser(response.data);
+        setUser(response.data.user);
         return { success: true };
       } else {
         return { success: false, error: response.error || 'Login failed' };
@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await authAPI.signup(formData);
 
       if (response.success && response.data) {
-        setUser(response.data);
+        setUser(response.data.user);
         return { success: true };
       } else {
         return { success: false, error: response.error || 'Signup failed' };

@@ -47,6 +47,7 @@ export const AppConfig = {
 
   // Feature Flags
   features: {
+    useMockApi: import.meta.env.VITE_USE_MOCK === 'true',
     enableRealtimeMatching: true,
     enableSkillExtraction: true,
     enableMatchExplanation: true,

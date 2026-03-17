@@ -6,6 +6,7 @@
 import { logger } from '@/utils/logger';
 import type {
   User,
+  AuthResponse,
   Resume,
   Job,
   Match,
@@ -32,6 +33,7 @@ async function apiRequest<T>(
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeaders(),
         ...options.headers,
       },
       ...options,
@@ -74,35 +76,35 @@ function getAuthHeaders(): Record<string, string> {
  * Authentication API
  */
 export const authAPI = {
-  async login(credentials: LoginForm): Promise<APIResponse<User>> {
+  async login(credentials: LoginForm): Promise<APIResponse<AuthResponse>> {
     logger.info('API: Login attempt', { email: credentials.email });
 
-    const response = await apiRequest<User>('/auth/login', {
+    const response = await apiRequest<AuthResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
 
     if (response.success && response.data) {
       // Store token in localStorage
-      localStorage.setItem('access_token', 'dummy_token'); // TODO: Get from response
-      localStorage.setItem('current_user', JSON.stringify(response.data));
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('current_user', JSON.stringify(response.data.user));
     }
 
     return response;
   },
 
-  async signup(formData: SignupForm): Promise<APIResponse<User>> {
+  async signup(formData: SignupForm): Promise<APIResponse<AuthResponse>> {
     logger.info('API: Signup attempt', { email: formData.email });
 
-    const response = await apiRequest<User>('/auth/signup', {
+    const response = await apiRequest<AuthResponse>('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(formData),
     });
 
     if (response.success && response.data) {
       // Store token in localStorage
-      localStorage.setItem('access_token', 'dummy_token'); // TODO: Get from response
-      localStorage.setItem('current_user', JSON.stringify(response.data));
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('current_user', JSON.stringify(response.data.user));
     }
 
     return response;
@@ -271,6 +273,8 @@ export const jobAPI = {
   },
 };
 
+import { AppConfig } from '@/config/app.config';
+
 /**
  * Matching API
  */
@@ -278,149 +282,59 @@ export const matchAPI = {
   async matchResumeToJobs(resumeId: string): Promise<APIResponse<Match[]>> {
     logger.info('API: Matching resume to jobs', { resumeId });
 
-    const resume = dataStore.resumes.get(resumeId);
-    if (!resume) {
+    if (AppConfig.features.useMockApi) {
+      logger.warn('Mock API active: skipping real resume match pipeline.', { resumeId });
       return {
-        success: false,
-        error: 'Resume not found',
+        success: true,
+        data: [],
         timestamp: new Date().toISOString(),
       };
     }
 
-    const allJobs = getAllJobs();
-    const matchResults = await executeResumeMatching(resume, allJobs);
-
-    // Convert match results to Match objects
-    const matches: Match[] = matchResults.map(result => ({
-      id: generateId(),
-      resumeId: result.resumeId,
-      jobId: result.jobId,
-      studentId: result.studentId,
-      recruiterId: result.recruiterId,
-      overallScore: result.overallScore,
-      skillScore: result.skillScore,
-      experienceScore: result.experienceScore,
-      semanticScore: result.semanticScore,
-      matchedSkills: result.matchedSkills,
-      missingSkills: result.missingSkills,
-      explanation: result.explanation,
-      createdAt: new Date(),
-      status: 'pending',
-    }));
-
-    // Store matches
-    matches.forEach(match => dataStore.matches.set(match.id, match));
-
-    return {
-      success: true,
-      data: matches,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Match[]>(`/matches/resume/${resumeId}`, {
+      method: 'POST',
+    });
   },
 
   async matchJobToCandidates(jobId: string): Promise<APIResponse<Match[]>> {
     logger.info('API: Matching job to candidates', { jobId });
 
-    const job = dataStore.jobs.get(jobId);
-    if (!job) {
+    if (AppConfig.features.useMockApi) {
+      logger.warn('Mock API active: skipping real job match pipeline.', { jobId });
       return {
-        success: false,
-        error: 'Job not found',
+        success: true,
+        data: [],
         timestamp: new Date().toISOString(),
       };
     }
 
-    const allResumes = getAllResumes();
-    const matchResults = await executeJobMatching(job, allResumes);
-
-    // Convert match results to Match objects
-    const matches: Match[] = matchResults.map(result => ({
-      id: generateId(),
-      resumeId: result.resumeId,
-      jobId: result.jobId,
-      studentId: result.studentId,
-      recruiterId: result.recruiterId,
-      overallScore: result.overallScore,
-      skillScore: result.skillScore,
-      experienceScore: result.experienceScore,
-      semanticScore: result.semanticScore,
-      matchedSkills: result.matchedSkills,
-      missingSkills: result.missingSkills,
-      explanation: result.explanation,
-      createdAt: new Date(),
-      status: 'pending',
-    }));
-
-    // Store matches
-    matches.forEach(match => dataStore.matches.set(match.id, match));
-
-    return {
-      success: true,
-      data: matches,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Match[]>(`/matches/job/${jobId}`, {
+      method: 'POST',
+    });
   },
 
   async getMatchesByStudent(studentId: string): Promise<APIResponse<Match[]>> {
     logger.info('API: Getting matches for student', { studentId });
-    await sleep(300);
-
-    const matches = getMatchesByStudent(studentId);
-
-    return {
-      success: true,
-      data: matches,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Match[]>(`/matches/student/${studentId}`);
   },
 
   async getMatchesByRecruiter(recruiterId: string): Promise<APIResponse<Match[]>> {
     logger.info('API: Getting matches for recruiter', { recruiterId });
-    await sleep(300);
-
-    const matches = getMatchesByRecruiter(recruiterId);
-
-    return {
-      success: true,
-      data: matches,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Match[]>(`/matches/recruiter/${recruiterId}`);
   },
 
   async getMatchesByJob(jobId: string): Promise<APIResponse<Match[]>> {
     logger.info('API: Getting matches for job', { jobId });
-    await sleep(300);
-
-    const matches = getMatchesByJob(jobId);
-
-    return {
-      success: true,
-      data: matches,
-      timestamp: new Date().toISOString(),
-    };
+    // Note: Depends on backend having a /matches/job/{job_id} GET endpoint or similar.
+    // Testing suite showed GET /matches/job/{job_id} does exist.
+    return apiRequest<Match[]>(`/matches/job/${jobId}`);
   },
 
   async updateMatchStatus(matchId: string, status: Match['status']): Promise<APIResponse<Match>> {
     logger.info('API: Updating match status', { matchId, status });
-    await sleep(200);
-
-    const match = dataStore.matches.get(matchId);
-
-    if (!match) {
-      return {
-        success: false,
-        error: 'Match not found',
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    match.status = status;
-    dataStore.matches.set(matchId, match);
-
-    return {
-      success: true,
-      data: match,
-      timestamp: new Date().toISOString(),
-    };
+    return apiRequest<Match>(`/matches/${matchId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
   },
 };

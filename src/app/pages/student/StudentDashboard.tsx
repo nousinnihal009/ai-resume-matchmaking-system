@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { useResumes, useMatches } from '@/hooks/useData';
@@ -25,7 +25,7 @@ import { validateResumeFile } from '@/utils/validation';
 import { formatDate, formatFileSize, formatSalary } from '@/utils/helpers';
 import { toast } from 'sonner';
 import type { Match, Job, Resume } from '@/types/models';
-import { dataStore } from '@/services/api/mockData';
+import { jobAPI } from '@/services/api/apiService';
 
 export function StudentDashboard() {
   const { user, logout } = useAuth();
@@ -35,6 +35,36 @@ export function StudentDashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Maintain local state for jobs we need to display
+  const [jobsData, setJobsData] = useState<Record<string, Job>>({});
+
+  // When matches load/change, fetch the corresponding jobs
+  useEffect(() => {
+    if (matches.length === 0) return;
+
+    const fetchJobs = async () => {
+      const missingJobIds = Array.from(new Set(matches.map((m) => m.jobId))).filter(
+        (id) => !jobsData[id]
+      );
+
+      if (missingJobIds.length === 0) return;
+
+      const results = await Promise.all(
+        missingJobIds.map((id) => jobAPI.getById(id))
+      );
+
+      const newJobs: Record<string, Job> = { ...jobsData };
+      results.forEach((res) => {
+        if (res.success && res.data) {
+          newJobs[res.data.id] = res.data;
+        }
+      });
+      setJobsData(newJobs);
+    };
+
+    fetchJobs();
+  }, [matches]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -70,7 +100,7 @@ export function StudentDashboard() {
 
   // Get jobs for displaying match details
   const getJobById = (jobId: string): Job | undefined => {
-    return dataStore.jobs.get(jobId);
+    return jobsData[jobId];
   };
 
   const stats = {
@@ -194,8 +224,8 @@ export function StudentDashboard() {
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {matches
-                  .sort((a, b) => b.overallScore - a.overallScore)
-                  .map((match) => {
+                  .sort((a: Match, b: Match) => b.overallScore - a.overallScore)
+                  .map((match: Match) => {
                     const job = getJobById(match.jobId);
                     return (
                       <div key={match.id}>
@@ -327,7 +357,7 @@ function MatchDetailDialog({
                 <span className="text-green-600">✓</span> Strengths
               </h3>
               <ul className="space-y-1 text-sm">
-                {match.explanation.strengths.map((strength, i) => (
+                {match.explanation.strengths.map((strength: string, i: number) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="text-green-600 mt-0.5">•</span>
                     <span>{strength}</span>
@@ -344,7 +374,7 @@ function MatchDetailDialog({
                 <span className="text-red-600">!</span> Areas to Improve
               </h3>
               <ul className="space-y-1 text-sm">
-                {match.explanation.gaps.map((gap, i) => (
+                {match.explanation.gaps.map((gap: string, i: number) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="text-red-600 mt-0.5">•</span>
                     <span>{gap}</span>

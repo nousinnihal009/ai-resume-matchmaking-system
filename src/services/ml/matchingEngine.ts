@@ -7,6 +7,14 @@ import { logger } from '@/utils/logger';
 import { AppConfig } from '@/config/app.config';
 import { cosineSimilarity } from './embeddings';
 import { calculateSkillOverlap } from './skillExtraction';
+/**
+ * =========================================================================
+ * WARNING: FOR LOCAL OFFLINE DEVELOPMENT ONLY
+ * =========================================================================
+ * Client-side ML logic has been deprecated in favor of backend
+ * implementations. Preserved strictly for offline development fallbacks.
+ * =========================================================================
+ */
 import type { Resume, Job, Match, MatchExplanation } from '@/types/models';
 import { generateId } from '@/utils/helpers';
 

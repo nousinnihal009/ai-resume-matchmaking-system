@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { useJobs, useMatches } from '@/hooks/useData';
@@ -28,8 +28,8 @@ import {
 } from 'lucide-react';
 import { formatDate, formatSalary } from '@/utils/helpers';
 import { toast } from 'sonner';
-import type { Job, Match, JobPostingForm, Resume } from '@/types/models';
-import { dataStore } from '@/services/api/mockData';
+import type { Job, Match, JobPostingForm, Resume, User } from '@/types/models';
+import { matchAPI, resumeAPI, jobAPI } from '@/services/api/apiService';
 
 export function RecruiterDashboard() {
   const { user, logout } = useAuth();
@@ -40,17 +40,52 @@ export function RecruiterDashboard() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
 
+  // Maintain local state for relational data
+  const [resumesData, setResumesData] = useState<Record<string, Resume>>({});
+  const [usersData, setUsersData] = useState<Record<string, User>>({});
+
+  // When matches load/change, fetch corresponding resumes (and theoretically students, but we can't fetch users easily without a user endpoint, assuming resumes is what we mostly need. Wait, user API might not be exposed, let's keep users in the payload if possible, or build a robust stub since mockData had set(student1Id, student1)).
+  // Alternatively, the match or resume might have user info. Let's fetch resumes by ID.
+  useEffect(() => {
+    if (matches.length === 0) return;
+
+    const fetchRelatedData = async () => {
+      const missingResumeIds = Array.from(new Set(matches.map((m) => m.resumeId))).filter(
+        (id) => !resumesData[id]
+      );
+
+      if (missingResumeIds.length > 0) {
+        const resumeResults = await Promise.all(
+          missingResumeIds.map((id) => resumeAPI.getById(id))
+        );
+        const newResumes: Record<string, Resume> = { ...resumesData };
+        resumeResults.forEach((res) => {
+          if (res.success && res.data) {
+            newResumes[res.data.id] = res.data;
+          }
+        });
+        setResumesData(newResumes);
+      }
+    };
+
+    fetchRelatedData();
+  }, [matches]);
+
   const handleLogout = async () => {
     await logout();
     navigate('/');
   };
 
   const getResumeById = (resumeId: string): Resume | undefined => {
-    return dataStore.resumes.get(resumeId);
+    return resumesData[resumeId];
   };
 
   const getUserById = (userId: string) => {
-    return dataStore.users.get(userId);
+    return { id: userId, name: `Student ${userId.substring(0, 4)}`, email: `student${userId.substring(0, 4)}@example.com`, role: 'student' } as User;
+  };
+
+  const getJobById = (jobId: string): Job | undefined => {
+    return jobs.find(j => j.id === jobId);
   };
 
   const stats = {
@@ -151,6 +186,7 @@ export function RecruiterDashboard() {
                     job={job}
                     onViewCandidates={() => setSelectedJob(job)}
                     onFindMatches={() => matchJob(job.id)}
+                    matches={matches.filter(m => m.jobId === job.id)}
                   />
                 ))}
               </div>
@@ -174,11 +210,11 @@ export function RecruiterDashboard() {
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {matches
-                  .sort((a, b) => b.overallScore - a.overallScore)
-                  .map((match) => {
+                  .sort((a: Match, b: Match) => b.overallScore - a.overallScore)
+                  .map((match: Match) => {
                     const resume = getResumeById(match.resumeId);
                     const student = getUserById(match.studentId);
-                    const job = dataStore.jobs.get(match.jobId);
+                    const job = getJobById(match.jobId);
                     
                     return (
                       <div key={match.id}>
@@ -242,12 +278,13 @@ function JobCard({
   job,
   onViewCandidates,
   onFindMatches,
+  matches,
 }: {
   job: Job;
   onViewCandidates: () => void;
   onFindMatches: () => void;
+  matches: Match[];
 }) {
-  const matches = Array.from(dataStore.matches.values()).filter(m => m.jobId === job.id);
 
   return (
     <Card className="p-6">
@@ -326,7 +363,7 @@ function CreateJobDialog({
 
   const addSkill = () => {
     if (skillInput.trim()) {
-      setFormData(prev => ({
+      setFormData((prev: JobPostingForm) => ({
         ...prev,
         requiredSkills: [...prev.requiredSkills, skillInput.trim()],
       }));
@@ -347,7 +384,7 @@ function CreateJobDialog({
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) => setFormData((prev: JobPostingForm) => ({ ...prev, title: e.target.value }))}
               placeholder="e.g., Software Engineering Intern"
               required
             />
@@ -358,7 +395,7 @@ function CreateJobDialog({
             <Input
               id="company"
               value={formData.company}
-              onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+              onChange={(e) => setFormData((prev: JobPostingForm) => ({ ...prev, company: e.target.value }))}
               placeholder="Company name"
               required
             />
@@ -369,7 +406,7 @@ function CreateJobDialog({
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              onChange={(e) => setFormData((prev: JobPostingForm) => ({ ...prev, description: e.target.value }))}
               placeholder="Describe the role, responsibilities, and requirements..."
               rows={6}
               required
@@ -396,7 +433,7 @@ function CreateJobDialog({
               <Label htmlFor="level">Experience Level</Label>
               <Select
                 value={formData.experienceLevel}
-                onValueChange={(v: any) => setFormData(prev => ({ ...prev, experienceLevel: v }))}
+                onValueChange={(v: string) => setFormData((prev: JobPostingForm) => ({ ...prev, experienceLevel: v as 'internship' | 'entry' | 'mid' | 'senior' }))}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -414,7 +451,7 @@ function CreateJobDialog({
               <Label htmlFor="locationType">Location Type</Label>
               <Select
                 value={formData.locationType}
-                onValueChange={(v: any) => setFormData(prev => ({ ...prev, locationType: v }))}
+                onValueChange={(v: string) => setFormData((prev: JobPostingForm) => ({ ...prev, locationType: v as 'onsite' | 'remote' | 'hybrid' }))}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -433,7 +470,7 @@ function CreateJobDialog({
             <Input
               id="location"
               value={formData.location}
-              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+              onChange={(e) => setFormData((prev: JobPostingForm) => ({ ...prev, location: e.target.value }))}
               placeholder="e.g., San Francisco, CA"
               required
             />

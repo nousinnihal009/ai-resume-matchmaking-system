@@ -65,6 +65,13 @@ class RecruiterProfileBase(BaseSchema):
     updated_at: datetime
 
 
+class AuthResponse(BaseSchema):
+    """Authentication response with user data and access token."""
+    user: UserBase
+    access_token: str
+    token_type: str = "bearer"
+
+
 class LoginRequest(BaseModel):
     """Login request schema."""
     email: str = Field(..., min_length=1, max_length=255)

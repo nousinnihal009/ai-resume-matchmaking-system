@@ -3,13 +3,18 @@ Main FastAPI application.
 """
 import logging
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
 from .core.config import settings
 from .api import auth, resumes, jobs, matches, analytics
 from .db import engine, Base
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from .core.limiter import limiter
 
 # Configure logging
 logging.basicConfig(
@@ -25,11 +30,15 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting up FastAPI application...")
 
-    # Create database tables
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Schema is managed by Alembic migrations.
+    # To apply: alembic upgrade head
+    # To create a new migration: alembic revision --autogenerate -m "description"
+    # To rollback one step: alembic downgrade -1
+    # WARNING: Do not re-enable create_all — it cannot track schema changes.
+    # async with engine.begin() as conn:
+    #     await conn.run_sync(Base.metadata.create_all)
 
-    logger.info("Database tables created/verified")
+    logger.info("Database schema managed by Alembic migrations")
 
     yield
 
@@ -44,6 +53,9 @@ app = FastAPI(
     debug=settings.debug,
     lifespan=lifespan
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS middleware
 app.add_middleware(
@@ -60,6 +72,29 @@ app.add_middleware(
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy", "version": settings.version}
+
+
+@app.get("/ready")
+async def readiness_check():
+    """Readiness probe — validates database connectivity before
+    accepting traffic. Returns 503 if any critical dependency
+    is unavailable."""
+    checks = {"api": "ok"}
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+        checks["database"] = "ok"
+    except Exception:
+        checks["database"] = "unavailable"
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "not_ready",
+                "checks": checks,
+                "version": settings.version
+            }
+        )
+    return {"status": "ready", "checks": checks, "version": settings.version}
 
 
 # API routes
@@ -81,7 +116,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={
             "success": False,
             "error": "Internal server error",
-            "timestamp": "2025-01-31T12:00:00Z"
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     )
 

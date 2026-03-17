@@ -32,6 +32,14 @@ export interface RecruiterProfile extends User {
   linkedinUrl?: string;
 }
 
+// ==================== Auth Response ====================
+
+export interface AuthResponse {
+  user: User;
+  access_token: string;
+  token_type: string;
+}
+
 // ==================== Resume Models ====================
 
 export interface Resume {

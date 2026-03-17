@@ -4,6 +4,15 @@
  * Simulates sentence transformers / BERT-based embeddings
  */
 
+/**
+ * =========================================================================
+ * WARNING: FOR LOCAL OFFLINE DEVELOPMENT ONLY
+ * =========================================================================
+ * TensorFlow.js and USE embedding generation are now performed by the backend.
+ * Preserved for offline development or testing purposes only.
+ * =========================================================================
+ */
+import * as use from '@tensorflow-models/universal-sentence-encoder';
 import { logger } from '@/utils/logger';
 import { AppConfig } from '@/config/app.config';
 
