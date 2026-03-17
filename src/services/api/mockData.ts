@@ -1,9 +1,13 @@
 /**
- * Mock Data Store
- * In-memory data storage for demonstration
- * In production, this would be replaced with actual database calls
+ * MOCK DATA — FOR LOCAL DEVELOPMENT ONLY
+ *
+ * This file is only active when VITE_USE_MOCK=true in your .env file.
+ * It is NOT used in production. All live data flows through apiService.ts
+ * which calls the FastAPI backend at VITE_API_BASE_URL.
+ *
+ * To disable mock mode: set VITE_USE_MOCK=false (default)
+ * To enable mock mode:  set VITE_USE_MOCK=true
  */
-
 import type {
   User,
   StudentProfile,
