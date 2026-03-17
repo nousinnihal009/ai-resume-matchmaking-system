@@ -3,7 +3,7 @@ Core configuration for the FastAPI application.
 """
 import os
 from typing import List, Optional
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -26,6 +26,14 @@ class Settings(BaseSettings):
         env="DATABASE_URL"
     )
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def assemble_db_connection(cls, v: str) -> str:
+        """Convert postgresql:// to postgresql+asyncpg:// for async engine."""
+        if v and isinstance(v, str) and v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
+
     # JWT
     secret_key: str = Field(
         default="your-secret-key-change-in-production",
@@ -34,9 +42,12 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
 
+    # Redis
+    redis_url: str = Field(default="redis://localhost:6379", env="REDIS_URL")
+
     # File Upload
-    upload_directory: str = Field(default="./uploads", env="UPLOAD_DIRECTORY")
-    max_file_size: int = 5 * 1024 * 1024  # 5MB
+    upload_directory: str = Field(default="./uploads", env="UPLOAD_DIR")
+    max_file_size: int = Field(default=5 * 1024 * 1024, env="MAX_UPLOAD_SIZE")
     allowed_extensions: List[str] = [".pdf", ".docx"]
 
     # CORS
@@ -48,11 +59,16 @@ class Settings(BaseSettings):
     # ML Pipeline
     embedding_model: str = Field(default="sentence-transformers/all-MiniLM-L6-v2", env="EMBEDDING_MODEL")
     embedding_dimension: int = 384
+    similarity_threshold: float = Field(default=0.7, env="SIMILARITY_THRESHOLD")
 
     # External Services (placeholders)
     openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
 
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        extra="ignore"
+    )
 
 
 # Global settings instance
