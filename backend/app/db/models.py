@@ -93,7 +93,7 @@ class Resume(Base):
     education = Column(JSONB, server_default="[]")
     experience = Column(JSONB, server_default="[]")
     status = Column(String(20), server_default="processing")
-    metadata = Column(JSONB, server_default="{}")
+    extra_metadata = Column(JSONB, server_default="{}")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -129,7 +129,7 @@ class Job(Base):
     posted_at = Column(DateTime(timezone=True), server_default=func.now())
     expires_at = Column(DateTime(timezone=True))
     status = Column(String(20), server_default="active")
-    metadata = Column(JSONB, server_default="{}")
+    extra_metadata = Column(JSONB, server_default="{}")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
