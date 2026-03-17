@@ -1,6 +1,7 @@
 """
 Core configuration for the FastAPI application.
 """
+import json
 import os
 from typing import List, Optional
 from pydantic import Field, field_validator
@@ -55,6 +56,21 @@ class Settings(BaseSettings):
         default=["http://localhost:3000", "http://localhost:5173"],
         env="CORS_ORIGINS"
     )
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v):
+        """Accept JSON arrays or comma-separated CORS origins from env."""
+        if isinstance(v, list):
+            return v
+        if isinstance(v, str):
+            value = v.strip()
+            if not value:
+                return ["http://localhost:3000", "http://localhost:5173"]
+            if value.startswith("["):
+                return json.loads(value)
+            return [origin.strip() for origin in value.split(",") if origin.strip()]
+        return v
 
     # ML Pipeline
     embedding_model: str = Field(default="sentence-transformers/all-MiniLM-L6-v2", env="EMBEDDING_MODEL")
