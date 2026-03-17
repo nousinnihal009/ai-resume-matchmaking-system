@@ -1,9 +1,6 @@
-/**
- * Embedding Generation Service
- * Generates semantic vector embeddings for text
- * Simulates sentence transformers / BERT-based embeddings
- */
-
+// CLIENT-SIDE ML — preserved for reference and offline development only.
+// Live matching runs on the backend via POST /api/v1/matches/resume/{id}.
+// This file is NOT called in production data flows.
 /**
  * =========================================================================
  * WARNING: FOR LOCAL OFFLINE DEVELOPMENT ONLY
