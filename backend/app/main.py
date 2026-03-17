@@ -12,8 +12,8 @@ from sqlalchemy import text
 from .core.config import settings
 from .api import auth, resumes, jobs, matches, analytics
 from .db import engine, Base
-from slowapi import _rate_limit_exceeded_handler
-from slowapi.errors import RateLimitExceeded
+# from slowapi import _rate_limit_exceeded_handler
+# from slowapi.errors import RateLimitExceeded
 from .core.limiter import limiter
 
 # Configure logging
@@ -55,7 +55,7 @@ app = FastAPI(
 )
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+# app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS middleware
 app.add_middleware(
