@@ -65,7 +65,7 @@ class ResumeService:
                 extracted_text=extracted_text,
                 extracted_skills=skill_data["extracted_skills"],
                 status="completed",
-                metadata={
+                extra_metadata={
                     "skill_confidence": skill_data["confidence"],
                     "skill_categories": skill_data["categories"]
                 }
