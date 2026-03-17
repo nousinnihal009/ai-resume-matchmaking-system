@@ -261,3 +261,4 @@ WARNING:  WatchFiles detected changes in 'tests\test_matches.py', 'tests\test_re
 INFO:     127.0.0.1:58406 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
 INFO:     127.0.0.1:63577 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
 INFO:     127.0.0.1:49713 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:59164 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
