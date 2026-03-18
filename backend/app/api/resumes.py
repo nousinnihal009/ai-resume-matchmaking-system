@@ -55,7 +55,7 @@ async def upload_resume(
 
         # Create response
         response_data = ResumeUploadResponse(
-            resume=ResumeBase.from_orm(resume),
+            resume=ResumeBase.model_validate(resume),
             processing_status="completed"
         )
 
@@ -93,7 +93,7 @@ async def get_user_resumes(
         resume_service = ResumeService(db)
         resumes = await resume_service.get_resumes_by_user(user_id)
 
-        resume_data = [ResumeBase.from_orm(resume) for resume in resumes]
+        resume_data = [ResumeBase.model_validate(resume) for resume in resumes]
 
         return APIResponse(
             success=True,
@@ -137,7 +137,7 @@ async def get_resume(
 
         return APIResponse(
             success=True,
-            data=ResumeBase.from_orm(resume),
+            data=ResumeBase.model_validate(resume),
             message="Resume retrieved successfully"
         )
 
