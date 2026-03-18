@@ -81,7 +81,7 @@ async def get_current_user(
     if user is None:
         raise credentials_exception
 
-    return UserBase.from_orm(user)
+    return UserBase.model_validate(user)
 
 
 def hash_password(password: str) -> str:
