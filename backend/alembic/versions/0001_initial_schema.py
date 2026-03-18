@@ -16,9 +16,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # Enable pgvector extension for embedding storage
-    op.execute("CREATE EXTENSION IF NOT EXISTS vector")
-
     # ── CREATE TABLES (in foreign key dependency order) ──────────────
 
     # 1. users (no FK dependencies)
@@ -275,5 +272,3 @@ def downgrade() -> None:
     op.drop_table("student_profiles")
     op.drop_table("users")
 
-    # Drop extension last
-    op.execute("DROP EXTENSION IF EXISTS vector")
