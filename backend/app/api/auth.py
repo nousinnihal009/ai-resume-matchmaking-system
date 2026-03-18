@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..db.session import get_db
 from ..services.user_service import UserService
-from ..schemas.user import UserBase, LoginRequest, SignupRequest, AuthResponse
+from ..schemas.user import UserBase, UserCreate, LoginRequest, SignupRequest, AuthResponse
 from ..schemas.base import APIResponse
 from ..core.security import create_access_token, get_current_user
 from ..core.config import settings
@@ -56,7 +56,7 @@ async def login(
         )
 
         # Return user data with token (in a real app, you'd return token separately)
-        user_data = UserBase.from_orm(user)
+        user_data = UserBase.model_validate(user)
 
         logger.info(f"User {user.email} logged in successfully")
 
@@ -107,14 +107,19 @@ async def signup(
             )
 
         # Create user
-        user_data = {
-            "email": signup_data.email,
-            "password": signup_data.password,
-            "name": signup_data.name,
-            "role": signup_data.role
-        }
+        user_create = UserCreate(
+            email=signup_data.email,
+            password=signup_data.password,
+            name=signup_data.name,
+            role=signup_data.role,
+            university=getattr(signup_data, 'university', None),
+            major=getattr(signup_data, 'major', None),
+            graduation_year=getattr(signup_data, 'graduation_year', None),
+            company=getattr(signup_data, 'company', None),
+            position=getattr(signup_data, 'position', None),
+        )
 
-        user = await user_service.create_user(user_data)
+        user = await user_service.create_user(user_create)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -128,7 +133,7 @@ async def signup(
             expires_delta=access_token_expires
         )
 
-        user_response = UserBase.from_orm(user)
+        user_response = UserBase.model_validate(user)
 
         logger.info(f"User {user.email} signed up successfully")
 
