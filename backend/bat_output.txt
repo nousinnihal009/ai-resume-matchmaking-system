@@ -262,3 +262,488 @@ INFO:     127.0.0.1:58406 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Reque
 INFO:     127.0.0.1:63577 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
 INFO:     127.0.0.1:49713 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
 INFO:     127.0.0.1:59164 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60982 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60982 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60982 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60982 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60982 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60982 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-03-18 01:32:57,174 - app.main - INFO - Shutting down FastAPI application...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26620]
+WARNING:  WatchFiles detected changes in 'tests\test_matches.py', 'tests\test_resumes.py', 'app\pipeline\__init__.py', 'ping.py', 'test_mini.py', 'debug_env.py', 'app\api\matches.py', 'app\api\auth.py', 'app\schemas\__init__.py', 'app\db\models.py', 'test_imports.py', 'app\services\user_service.py', 'app\schemas\match.py', 'app\schemas\job.py', 'app\pipeline\skill_extraction.py', 'app\services\match_service.py', 'tests\test_health.py', 'app\main.py', 'app\api\resumes.py', 'tests\test_jobs.py', 'alembic\env.py', 'app\services\job_service.py', 'app\core\security.py', 'app\db\session.py', 'tests\test_rate_limiting.py', 'app\api\__init__.py', 'app\schemas\base.py', 'app\core\config.py', 'alembic\versions\0001_initial_schema.py', 'test_db.py', 'app\core\__init__.py', 'app\schemas\resume.py', 'app\schemas\user.py', 'app\services\analytics_service.py', 'test_startup.py', 'tests\__init__.py', 'app\api\jobs.py', 'app\pipeline\embeddings.py', 'app\pipeline\matching.py', 'alembic\versions\__init__.py', 'alembic\__init__.py', 'app\pipeline\text_extraction.py', 'app\api\analytics.py', 'tests\conftest.py', 'app\schemas\analytics.py', 'app\services\resume_service.py', 'app\db\__init__.py', 'tests\test_auth.py', 'app\core\limiter.py'. Reloading...
+Process SpawnProcess-9:
+Traceback (most recent call last):
+  File "C:\Python313\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Python313\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\_subprocess.py", line 76, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 61, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 103, in run
+    and signal.getsignal(signal.SIGINT) is signal.default_int_handler
+        ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\signal.py", line 64, in getsignal
+    handler = _signal.getsignal(signalnum)
+KeyboardInterrupt
+INFO:     Started server process [25472]
+INFO:     Waiting for application startup.
+2026-03-18 01:33:02,145 - app.main - INFO - Starting up FastAPI application...
+2026-03-18 01:33:02,145 - app.main - INFO - Database schema managed by Alembic migrations
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'test_import.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-03-18 13:53:14,369 - app.main - INFO - Shutting down FastAPI application...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [25472]
+INFO:     Started server process [28612]
+INFO:     Waiting for application startup.
+2026-03-18 13:53:17,332 - app.main - INFO - Starting up FastAPI application...
+2026-03-18 13:53:17,332 - app.main - INFO - Database schema managed by Alembic migrations
+INFO:     Application startup complete.
+INFO:     127.0.0.1:65395 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:65395 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54221 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54221 - "POST /api/v1/auth/signup HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:56662 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56662 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+WARNING:  WatchFiles detected changes in 'app\schemas\user.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-03-18 13:58:15,244 - app.main - INFO - Shutting down FastAPI application...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [28612]
+WARNING:  WatchFiles detected changes in 'app\api\auth.py'. Reloading...
+Process SpawnProcess-12:
+Traceback (most recent call last):
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 63, in serve
+    async def serve(self, sockets: Optional[List[socket.socket]] = None) -> None:
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python313\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Python313\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\_subprocess.py", line 76, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 61, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+WARNING:  WatchFiles detected changes in 'app\api\auth.py'. Reloading...
+INFO:     Started server process [29844]
+INFO:     Waiting for application startup.
+2026-03-18 13:58:19,839 - app.main - INFO - Starting up FastAPI application...
+2026-03-18 13:58:19,839 - app.main - INFO - Database schema managed by Alembic migrations
+INFO:     Application startup complete.
+INFO:     127.0.0.1:60921 - "OPTIONS /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for connections to close. (CTRL+C to force quit)
+2026-03-18 13:58:53,721 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-03-18 13:58:53,721 - sqlalchemy.engine.Engine - INFO - select pg_catalog.version()
+2026-03-18 13:58:53,722 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 13:58:53,722 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 13:58:53,751 INFO sqlalchemy.engine.Engine select current_schema()
+2026-03-18 13:58:53,751 - sqlalchemy.engine.Engine - INFO - select current_schema()
+2026-03-18 13:58:53,751 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 13:58:53,751 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 13:58:53,757 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-03-18 13:58:53,757 - sqlalchemy.engine.Engine - INFO - show standard_conforming_strings
+2026-03-18 13:58:53,757 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 13:58:53,757 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 13:58:53,759 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:58:53,759 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:58:53,793 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:58:53,793 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:58:53,794 INFO sqlalchemy.engine.Engine [generated in 0.00034s] ('nousinnihal2004@gmail.com',)
+2026-03-18 13:58:53,794 - sqlalchemy.engine.Engine - INFO - [generated in 0.00034s] ('nousinnihal2004@gmail.com',)
+2026-03-18 13:58:53,805 - app.services.user_service - ERROR - Error getting user by email nousinnihal2004@gmail.com: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('nousinnihal2004@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:58:53,805 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:58:53,805 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:60921 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     Waiting for application shutdown.
+2026-03-18 13:58:53,908 - app.main - INFO - Shutting down FastAPI application...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [29844]
+INFO:     Started server process [27244]
+INFO:     Waiting for application startup.
+2026-03-18 13:58:56,211 - app.main - INFO - Starting up FastAPI application...
+2026-03-18 13:58:56,211 - app.main - INFO - Database schema managed by Alembic migrations
+INFO:     Application startup complete.
+2026-03-18 13:58:57,455 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-03-18 13:58:57,455 - sqlalchemy.engine.Engine - INFO - select pg_catalog.version()
+2026-03-18 13:58:57,455 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 13:58:57,455 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 13:58:57,458 INFO sqlalchemy.engine.Engine select current_schema()
+2026-03-18 13:58:57,458 - sqlalchemy.engine.Engine - INFO - select current_schema()
+2026-03-18 13:58:57,458 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 13:58:57,458 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 13:58:57,460 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-03-18 13:58:57,460 - sqlalchemy.engine.Engine - INFO - show standard_conforming_strings
+2026-03-18 13:58:57,460 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 13:58:57,460 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 13:58:57,463 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:58:57,463 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:58:57,490 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:58:57,490 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:58:57,490 INFO sqlalchemy.engine.Engine [generated in 0.00042s] ('john.doe@university.edu',)
+2026-03-18 13:58:57,490 - sqlalchemy.engine.Engine - INFO - [generated in 0.00042s] ('john.doe@university.edu',)
+2026-03-18 13:58:57,492 - app.services.user_service - ERROR - Error getting user by email john.doe@university.edu: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('john.doe@university.edu',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:58:57,493 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:58:57,493 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59160 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+2026-03-18 13:58:59,935 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:58:59,935 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:58:59,936 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:58:59,936 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:58:59,937 INFO sqlalchemy.engine.Engine [cached since 2.447s ago] ('john.doe@university.edu',)
+2026-03-18 13:58:59,937 - sqlalchemy.engine.Engine - INFO - [cached since 2.447s ago] ('john.doe@university.edu',)
+2026-03-18 13:58:59,938 - app.services.user_service - ERROR - Error getting user by email john.doe@university.edu: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('john.doe@university.edu',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:58:59,939 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:58:59,939 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59160 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+2026-03-18 13:59:00,862 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:59:00,862 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:59:00,862 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:00,862 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:00,862 INFO sqlalchemy.engine.Engine [cached since 3.372s ago] ('john.doe@university.edu',)
+2026-03-18 13:59:00,862 - sqlalchemy.engine.Engine - INFO - [cached since 3.372s ago] ('john.doe@university.edu',)
+2026-03-18 13:59:00,864 - app.services.user_service - ERROR - Error getting user by email john.doe@university.edu: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('john.doe@university.edu',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:59:00,865 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:59:00,865 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59160 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+2026-03-18 13:59:01,066 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:59:01,066 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:59:01,066 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:01,066 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:01,066 INFO sqlalchemy.engine.Engine [cached since 3.576s ago] ('john.doe@university.edu',)
+2026-03-18 13:59:01,066 - sqlalchemy.engine.Engine - INFO - [cached since 3.576s ago] ('john.doe@university.edu',)
+2026-03-18 13:59:01,068 - app.services.user_service - ERROR - Error getting user by email john.doe@university.edu: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('john.doe@university.edu',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:59:01,068 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:59:01,068 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59160 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+2026-03-18 13:59:01,242 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:59:01,242 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:59:01,242 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:01,242 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:01,242 INFO sqlalchemy.engine.Engine [cached since 3.752s ago] ('john.doe@university.edu',)
+2026-03-18 13:59:01,242 - sqlalchemy.engine.Engine - INFO - [cached since 3.752s ago] ('john.doe@university.edu',)
+2026-03-18 13:59:01,244 - app.services.user_service - ERROR - Error getting user by email john.doe@university.edu: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('john.doe@university.edu',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:59:01,245 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:59:01,245 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59160 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+2026-03-18 13:59:01,469 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:59:01,469 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:59:01,469 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:01,469 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:01,470 INFO sqlalchemy.engine.Engine [cached since 3.98s ago] ('john.doe@university.edu',)
+2026-03-18 13:59:01,470 - sqlalchemy.engine.Engine - INFO - [cached since 3.98s ago] ('john.doe@university.edu',)
+2026-03-18 13:59:01,471 - app.services.user_service - ERROR - Error getting user by email john.doe@university.edu: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('john.doe@university.edu',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:59:01,471 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:59:01,471 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59160 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+2026-03-18 13:59:36,328 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:59:36,328 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:59:36,328 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:36,328 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:36,328 INFO sqlalchemy.engine.Engine [cached since 38.84s ago] ('nousinnihal2004@gmail.com',)
+2026-03-18 13:59:36,328 - sqlalchemy.engine.Engine - INFO - [cached since 38.84s ago] ('nousinnihal2004@gmail.com',)
+2026-03-18 13:59:36,329 - app.services.user_service - ERROR - Error getting user by email nousinnihal2004@gmail.com: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('nousinnihal2004@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:59:36,329 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-18 13:59:36,385 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:59:36,385 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-18 13:59:36,386 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:64492 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+2026-03-18 13:59:57,988 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 13:59:57,988 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 13:59:57,989 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:57,989 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 13:59:57,989 INFO sqlalchemy.engine.Engine [cached since 60.5s ago] ('nousinnihal2004@gmail.com',)
+2026-03-18 13:59:57,989 - sqlalchemy.engine.Engine - INFO - [cached since 60.5s ago] ('nousinnihal2004@gmail.com',)
+2026-03-18 13:59:57,991 - app.services.user_service - ERROR - Error getting user by email nousinnihal2004@gmail.com: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('nousinnihal2004@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 13:59:57,991 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 13:59:57,991 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:58827 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:51738 - "GET /health HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'app\api\auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-03-18 14:02:01,284 - app.main - INFO - Shutting down FastAPI application...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [27244]
+WARNING:  WatchFiles detected changes in 'app\api\resumes.py', 'app\core\security.py', 'app\api\jobs.py', 'app\api\matches.py'. Reloading...
+Process SpawnProcess-15:
+Traceback (most recent call last):
+  File "C:\Python313\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Python313\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\_subprocess.py", line 76, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 61, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 194, in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+         ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 58, in __enter__
+    self._lazy_init()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 137, in _lazy_init
+    self._loop = events.new_event_loop()
+                 ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\asyncio\events.py", line 837, in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\asyncio\events.py", line 734, in new_event_loop
+    return self._loop_factory()
+           ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\asyncio\selector_events.py", line 66, in __init__
+    self._make_self_pipe()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\asyncio\selector_events.py", line 120, in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\socket.py", line 627, in _fallback_socketpair
+    ssock, _ = lsock.accept()
+               ~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\socket.py", line 295, in accept
+    fd, addr = self._accept()
+               ~~~~~~~~~~~~^^
+KeyboardInterrupt
+Exception ignored in: <function BaseEventLoop.__del__ at 0x0000022A293A5800>
+Traceback (most recent call last):
+  File "C:\Python313\Lib\asyncio\base_events.py", line 766, in __del__
+    self.close()
+  File "C:\Python313\Lib\asyncio\selector_events.py", line 104, in close
+    self._close_self_pipe()
+  File "C:\Python313\Lib\asyncio\selector_events.py", line 111, in _close_self_pipe
+    self._remove_reader(self._ssock.fileno())
+AttributeError: '_WindowsSelectorEventLoop' object has no attribute '_ssock'
+C:\Python313\Lib\multiprocessing\process.py:327: RuntimeWarning: coroutine 'Server.serve' was never awaited
+  traceback.print_exc()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+INFO:     Started server process [31432]
+INFO:     Waiting for application startup.
+2026-03-18 14:02:05,792 - app.main - INFO - Starting up FastAPI application...
+2026-03-18 14:02:05,793 - app.main - INFO - Database schema managed by Alembic migrations
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app\api\auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for connections to close. (CTRL+C to force quit)
+2026-03-18 14:02:48,357 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-03-18 14:02:48,357 - sqlalchemy.engine.Engine - INFO - select pg_catalog.version()
+2026-03-18 14:02:48,358 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 14:02:48,358 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 14:02:48,378 INFO sqlalchemy.engine.Engine select current_schema()
+2026-03-18 14:02:48,378 - sqlalchemy.engine.Engine - INFO - select current_schema()
+2026-03-18 14:02:48,378 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 14:02:48,378 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 14:02:48,381 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-03-18 14:02:48,381 - sqlalchemy.engine.Engine - INFO - show standard_conforming_strings
+2026-03-18 14:02:48,381 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 14:02:48,381 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 14:02:48,384 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 14:02:48,384 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 14:02:48,421 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 14:02:48,421 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 14:02:48,421 INFO sqlalchemy.engine.Engine [generated in 0.00044s] ('nousinnihal2004@gmail.com',)
+2026-03-18 14:02:48,421 - sqlalchemy.engine.Engine - INFO - [generated in 0.00044s] ('nousinnihal2004@gmail.com',)
+2026-03-18 14:02:48,431 - app.services.user_service - ERROR - Error getting user by email nousinnihal2004@gmail.com: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('nousinnihal2004@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 14:02:48,432 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 14:02:48,432 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:51517 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     Waiting for application shutdown.
+2026-03-18 14:02:48,453 - app.main - INFO - Shutting down FastAPI application...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [31432]
+INFO:     Started server process [8632]
+INFO:     Waiting for application startup.
+2026-03-18 14:02:50,902 - app.main - INFO - Starting up FastAPI application...
+2026-03-18 14:02:50,902 - app.main - INFO - Database schema managed by Alembic migrations
+INFO:     Application startup complete.
+2026-03-18 14:02:53,693 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-03-18 14:02:53,693 - sqlalchemy.engine.Engine - INFO - select pg_catalog.version()
+2026-03-18 14:02:53,693 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 14:02:53,693 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 14:02:53,696 INFO sqlalchemy.engine.Engine select current_schema()
+2026-03-18 14:02:53,696 - sqlalchemy.engine.Engine - INFO - select current_schema()
+2026-03-18 14:02:53,697 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 14:02:53,697 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 14:02:53,699 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-03-18 14:02:53,699 - sqlalchemy.engine.Engine - INFO - show standard_conforming_strings
+2026-03-18 14:02:53,699 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-18 14:02:53,699 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-18 14:02:53,700 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 14:02:53,700 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 14:02:53,734 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 14:02:53,734 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 14:02:53,735 INFO sqlalchemy.engine.Engine [generated in 0.00035s] ('nousinnihal2004@gmail.com',)
+2026-03-18 14:02:53,735 - sqlalchemy.engine.Engine - INFO - [generated in 0.00035s] ('nousinnihal2004@gmail.com',)
+2026-03-18 14:02:53,737 - app.services.user_service - ERROR - Error getting user by email nousinnihal2004@gmail.com: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('nousinnihal2004@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 14:02:53,738 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 14:02:53,738 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:54221 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:65360 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 200 OK
+2026-03-18 19:16:21,625 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-18 19:16:21,625 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-18 19:16:21,638 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 19:16:21,638 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-18 19:16:21,640 INFO sqlalchemy.engine.Engine [cached since 1.881e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-18 19:16:21,640 - sqlalchemy.engine.Engine - INFO - [cached since 1.881e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-18 19:16:21,686 - app.services.user_service - ERROR - Error getting user by email nousinnihal2004@gmail.com: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "users" does not exist
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('nousinnihal2004@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-03-18 19:16:21,700 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-18 19:16:21,881 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-18 19:16:21,881 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-18 19:16:21,885 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:65360 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
