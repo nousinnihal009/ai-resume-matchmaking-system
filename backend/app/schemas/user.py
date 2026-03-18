@@ -81,9 +81,11 @@ class LoginRequest(BaseModel):
 
 class SignupRequest(BaseModel):
     """Signup request schema."""
+    model_config = {"populate_by_name": True}
+
     email: str = Field(..., min_length=1, max_length=255)
     password: str = Field(..., min_length=8)
-    confirm_password: str = Field(..., min_length=8)
+    confirm_password: str = Field(..., min_length=8, alias="confirmPassword")
     name: str = Field(..., min_length=1, max_length=255)
     role: str = Field(..., pattern="^(student|recruiter|admin)$")
     university: Optional[str] = None
