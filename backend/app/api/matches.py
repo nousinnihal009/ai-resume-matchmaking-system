@@ -50,7 +50,7 @@ async def match_resume_to_jobs(
         match_service = MatchService(db)
         matches = await match_service.match_resume_to_jobs(resume_id)
 
-        match_data = [MatchBase.from_orm(match) for match in matches]
+        match_data = [MatchBase.model_validate(match) for match in matches]
 
         return APIResponse(
             success=True,
@@ -97,7 +97,7 @@ async def match_job_to_candidates(
         match_service = MatchService(db)
         matches = await match_service.match_job_to_candidates(job_id)
 
-        match_data = [MatchBase.from_orm(match) for match in matches]
+        match_data = [MatchBase.model_validate(match) for match in matches]
 
         return APIResponse(
             success=True,
@@ -133,7 +133,7 @@ async def get_student_matches(
         match_service = MatchService(db)
         matches = await match_service.get_matches_by_student(student_id)
 
-        match_data = [MatchBase.from_orm(match) for match in matches]
+        match_data = [MatchBase.model_validate(match) for match in matches]
 
         return APIResponse(
             success=True,
@@ -169,7 +169,7 @@ async def get_recruiter_matches(
         match_service = MatchService(db)
         matches = await match_service.get_matches_by_recruiter(recruiter_id)
 
-        match_data = [MatchBase.from_orm(match) for match in matches]
+        match_data = [MatchBase.model_validate(match) for match in matches]
 
         return APIResponse(
             success=True,
@@ -198,7 +198,7 @@ async def get_job_matches(
         match_service = MatchService(db)
         matches = await match_service.get_matches_by_job(job_id)
 
-        match_data = [MatchBase.from_orm(match) for match in matches]
+        match_data = [MatchBase.model_validate(match) for match in matches]
 
         return APIResponse(
             success=True,
@@ -254,7 +254,7 @@ async def update_match_status(
 
         return APIResponse(
             success=True,
-            data=MatchBase.from_orm(updated_match),
+            data=MatchBase.model_validate(updated_match),
             message="Match status updated successfully"
         )
 
