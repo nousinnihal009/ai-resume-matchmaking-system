@@ -1,21 +1,16 @@
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import create_async_engine
 import asyncio
-import os
-from dotenv import load_dotenv
+from app.core.config import settings
+from app.db.session import engine
+from sqlalchemy import text
 
-load_dotenv()
+async def test_db():
+    print(f"Connecting to: {settings.database_url}")
+    try:
+        async with engine.connect() as conn:
+            result = await conn.execute(text("SELECT 1"))
+            print(f"Connection successful: {result.scalar()}")
+    except Exception as e:
+        print(f"Database connection failed: {e}")
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-engine = create_async_engine(
-    DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://"),
-    echo=True,
-)
-
-async def test_connection():
-    async with engine.connect() as conn:
-        result = await conn.execute(text("SELECT 1"))
-        print(result.scalar())
-
-asyncio.run(test_connection())
+if __name__ == "__main__":
+    asyncio.run(test_db())
