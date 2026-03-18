@@ -47,7 +47,7 @@ async def create_job(
 
         return APIResponse(
             success=True,
-            data=JobBase.from_orm(job),
+            data=JobBase.model_validate(job),
             message="Job posting created successfully"
         )
 
@@ -93,7 +93,7 @@ async def get_jobs(
         end_idx = start_idx + page_size
         paginated_jobs = jobs[start_idx:end_idx]
 
-        job_data = [JobBase.from_orm(job) for job in paginated_jobs]
+        job_data = [JobBase.model_validate(job) for job in paginated_jobs]
 
         response_data = PaginatedResponse(
             items=job_data,
@@ -135,7 +135,7 @@ async def get_recruiter_jobs(
         job_service = JobService(db)
         jobs = await job_service.get_jobs_by_recruiter(recruiter_id)
 
-        job_data = [JobBase.from_orm(job) for job in jobs]
+        job_data = [JobBase.model_validate(job) for job in jobs]
 
         return APIResponse(
             success=True,
@@ -172,7 +172,7 @@ async def get_job(
 
         return APIResponse(
             success=True,
-            data=JobBase.from_orm(job),
+            data=JobBase.model_validate(job),
             message="Job retrieved successfully"
         )
 
@@ -220,7 +220,7 @@ async def update_job(
 
         return APIResponse(
             success=True,
-            data=JobBase.from_orm(updated_job),
+            data=JobBase.model_validate(updated_job),
             message="Job updated successfully"
         )
 
