@@ -747,3 +747,786 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2026-03-18 19:16:21,881 - sqlalchemy.engine.Engine - INFO - ROLLBACK
 2026-03-18 19:16:21,885 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
 INFO:     127.0.0.1:65360 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+WARNING:  WatchFiles detected changes in 'alembic\versions\0001_initial_schema.py'. Reloading...
+INFO:     127.0.0.1:54947 - "OPTIONS /api/v1/auth/login HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:54947 - "OPTIONS /api/v1/auth/login HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60583 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:54241 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 200 OK
+2026-03-19 02:30:40,906 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:30:40,906 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:30:40,917 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:30:40,917 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:30:40,918 INFO sqlalchemy.engine.Engine [cached since 4.487e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:30:40,918 - sqlalchemy.engine.Engine - INFO - [cached since 4.487e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:30:40,935 - app.services.user_service - ERROR - Error getting user by email nousinnihal2004@gmail.com: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: connection is closed
+[SQL: SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR]
+[parameters: ('nousinnihal2004@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/rvf5)
+2026-03-19 02:30:40,949 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:30:40,976 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:54241 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+INFO:     Shutting down
+2026-03-19 02:33:10,097 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:33:10,097 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:33:10,101 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:10,101 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:10,102 INFO sqlalchemy.engine.Engine [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:10,102 - sqlalchemy.engine.Engine - INFO - [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:10,160 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:33:10,175 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:33:10,175 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:33:10,178 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:54214 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+INFO:     Waiting for connections to close. (CTRL+C to force quit)
+2026-03-19 02:33:11,239 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:33:11,239 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:33:11,240 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:11,240 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:11,240 INFO sqlalchemy.engine.Engine [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:11,240 - sqlalchemy.engine.Engine - INFO - [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:11,242 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:33:11,250 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:33:11,250 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:33:11,252 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:55689 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+2026-03-19 02:33:12,024 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:33:12,024 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:33:12,024 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,024 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,025 INFO sqlalchemy.engine.Engine [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,025 - sqlalchemy.engine.Engine - INFO - [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,027 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:33:12,035 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:33:12,035 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:33:12,036 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:55689 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+2026-03-19 02:33:12,217 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:33:12,217 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:33:12,217 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,217 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,217 INFO sqlalchemy.engine.Engine [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,217 - sqlalchemy.engine.Engine - INFO - [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,220 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:33:12,229 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:33:12,229 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:33:12,230 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:55689 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+2026-03-19 02:33:12,404 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:33:12,404 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:33:12,404 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,404 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,404 INFO sqlalchemy.engine.Engine [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,404 - sqlalchemy.engine.Engine - INFO - [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,407 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:33:12,415 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:33:12,415 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:33:12,416 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:55689 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+2026-03-19 02:33:12,591 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:33:12,591 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:33:12,591 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,591 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,591 INFO sqlalchemy.engine.Engine [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,591 - sqlalchemy.engine.Engine - INFO - [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,593 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:33:12,602 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:33:12,602 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:33:12,603 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:55689 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+2026-03-19 02:33:12,813 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:33:12,813 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:33:12,813 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,813 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:12,813 INFO sqlalchemy.engine.Engine [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,813 - sqlalchemy.engine.Engine - INFO - [cached since 4.502e+04s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:12,815 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:33:12,824 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:33:12,824 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:33:12,825 - app.services.user_service - ERROR - Error creating user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:55689 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+INFO:     Waiting for application shutdown.
+2026-03-19 02:33:17,885 - app.main - INFO - Shutting down FastAPI application...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [8632]
+WARNING:  WatchFiles detected changes in 'test_db.py', 'app\services\user_service.py'. Reloading...
+INFO:     Started server process [28044]
+INFO:     Waiting for application startup.
+2026-03-19 02:33:20,627 - app.main - INFO - Starting up FastAPI application...
+2026-03-19 02:33:20,628 - app.main - INFO - Database schema managed by Alembic migrations
+ERROR:    Traceback (most recent call last):
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 78, in serve
+    await self.startup(sockets=sockets)
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 89, in startup
+    await self.lifespan.startup()
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\lifespan\on.py", line 54, in startup
+    await self.startup_event.wait()
+  File "C:\Python313\Lib\asyncio\locks.py", line 213, in wait
+    await fut
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\starlette\routing.py", line 686, in lifespan
+    await receive()
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\lifespan\on.py", line 137, in receive
+    return await self.receive_queue.get()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\queues.py", line 186, in get
+    await getter
+asyncio.exceptions.CancelledError
+
+Process SpawnProcess-18:
+Traceback (most recent call last):
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 78, in serve
+    await self.startup(sockets=sockets)
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 89, in startup
+    await self.lifespan.startup()
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\lifespan\on.py", line 54, in startup
+    await self.startup_event.wait()
+  File "C:\Python313\Lib\asyncio\locks.py", line 213, in wait
+    await fut
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python313\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Python313\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\_subprocess.py", line 76, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 61, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+INFO:     Started server process [16512]
+INFO:     Waiting for application startup.
+2026-03-19 02:33:22,763 - app.main - INFO - Starting up FastAPI application...
+2026-03-19 02:33:22,763 - app.main - INFO - Database schema managed by Alembic migrations
+INFO:     Application startup complete.
+2026-03-19 02:33:29,178 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-03-19 02:33:29,178 - sqlalchemy.engine.Engine - INFO - select pg_catalog.version()
+2026-03-19 02:33:29,178 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-19 02:33:29,178 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-19 02:33:29,183 INFO sqlalchemy.engine.Engine select current_schema()
+2026-03-19 02:33:29,183 - sqlalchemy.engine.Engine - INFO - select current_schema()
+2026-03-19 02:33:29,183 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-19 02:33:29,183 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-19 02:33:29,187 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-03-19 02:33:29,187 - sqlalchemy.engine.Engine - INFO - show standard_conforming_strings
+2026-03-19 02:33:29,187 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-19 02:33:29,187 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-19 02:33:29,188 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:33:29,188 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:33:29,210 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:29,210 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:33:29,211 INFO sqlalchemy.engine.Engine [generated in 0.00030s] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:29,211 - sqlalchemy.engine.Engine - INFO - [generated in 0.00030s] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:33:29,217 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:33:29,260 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:33:29,260 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:33:29,262 - app.services.user_service - ERROR - Error creating user nousinnihal2004@gmail.com: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+Traceback (most recent call last):
+  File "c:\CODES\project_nousin\ai-resume-matchmaking-system\backend\app\services\user_service.py", line 54, in create_user
+    hashed_password = self._hash_password(user_data.password)
+  File "c:\CODES\project_nousin\ai-resume-matchmaking-system\backend\app\services\user_service.py", line 229, in _hash_password
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:50823 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+WARNING:  WatchFiles detected changes in 'test_signup.py'. Reloading...
+2026-03-19 02:34:30,880 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:34:30,880 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:34:30,887 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:34:30,887 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:34:30,888 INFO sqlalchemy.engine.Engine [cached since 61.68s ago] ('test_f86bb2@example.com',)
+2026-03-19 02:34:30,888 - sqlalchemy.engine.Engine - INFO - [cached since 61.68s ago] ('test_f86bb2@example.com',)
+2026-03-19 02:34:30,907 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-03-19 02:34:30,923 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:34:30,923 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:34:30,926 - app.services.user_service - ERROR - Error creating user test_f86bb2@example.com: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+Traceback (most recent call last):
+  File "c:\CODES\project_nousin\ai-resume-matchmaking-system\backend\app\services\user_service.py", line 54, in create_user
+    hashed_password = self._hash_password(user_data.password)
+  File "c:\CODES\project_nousin\ai-resume-matchmaking-system\backend\app\services\user_service.py", line 229, in _hash_password
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+INFO:     127.0.0.1:57796 - "POST /api/v1/auth/signup HTTP/1.1" 500 Internal Server Error
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-03-19 02:38:21,387 - app.main - INFO - Shutting down FastAPI application...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [16512]
+WARNING:  WatchFiles detected changes in 'test_signup.py'. Reloading...
+INFO:     Started server process [29252]
+INFO:     Waiting for application startup.
+2026-03-19 02:38:24,288 - app.main - INFO - Starting up FastAPI application...
+2026-03-19 02:38:24,288 - app.main - INFO - Database schema managed by Alembic migrations
+ERROR:    Traceback (most recent call last):
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 78, in serve
+    await self.startup(sockets=sockets)
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 89, in startup
+    await self.lifespan.startup()
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\lifespan\on.py", line 54, in startup
+    await self.startup_event.wait()
+  File "C:\Python313\Lib\asyncio\locks.py", line 213, in wait
+    await fut
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\starlette\routing.py", line 686, in lifespan
+    await receive()
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\lifespan\on.py", line 137, in receive
+    return await self.receive_queue.get()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\queues.py", line 186, in get
+    await getter
+asyncio.exceptions.CancelledError
+
+Process SpawnProcess-20:
+Traceback (most recent call last):
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 78, in serve
+    await self.startup(sockets=sockets)
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 89, in startup
+    await self.lifespan.startup()
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\lifespan\on.py", line 54, in startup
+    await self.startup_event.wait()
+  File "C:\Python313\Lib\asyncio\locks.py", line 213, in wait
+    await fut
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python313\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Python313\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\_subprocess.py", line 76, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeezy\OneDrive\Documents\GitHub\ai-resume-matchmaking-system\.venv\Lib\site-packages\uvicorn\server.py", line 61, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+INFO:     Started server process [16320]
+INFO:     Waiting for application startup.
+2026-03-19 02:38:26,489 - app.main - INFO - Starting up FastAPI application...
+2026-03-19 02:38:26,490 - app.main - INFO - Database schema managed by Alembic migrations
+INFO:     Application startup complete.
+2026-03-19 02:39:20,829 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-03-19 02:39:20,829 - sqlalchemy.engine.Engine - INFO - select pg_catalog.version()
+2026-03-19 02:39:20,830 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-19 02:39:20,830 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-19 02:39:20,835 INFO sqlalchemy.engine.Engine select current_schema()
+2026-03-19 02:39:20,835 - sqlalchemy.engine.Engine - INFO - select current_schema()
+2026-03-19 02:39:20,835 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-19 02:39:20,835 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-19 02:39:20,837 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-03-19 02:39:20,837 - sqlalchemy.engine.Engine - INFO - show standard_conforming_strings
+2026-03-19 02:39:20,837 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-03-19 02:39:20,837 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-03-19 02:39:20,838 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:39:20,838 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:39:20,868 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:39:20,868 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:39:20,868 INFO sqlalchemy.engine.Engine [generated in 0.00037s] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:39:20,868 - sqlalchemy.engine.Engine - INFO - [generated in 0.00037s] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:39:21,215 INFO sqlalchemy.engine.Engine INSERT INTO users (email, password_hash, name, role) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR) RETURNING users.id, users.created_at, users.updated_at
+2026-03-19 02:39:21,215 - sqlalchemy.engine.Engine - INFO - INSERT INTO users (email, password_hash, name, role) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR) RETURNING users.id, users.created_at, users.updated_at
+2026-03-19 02:39:21,215 INFO sqlalchemy.engine.Engine [generated in 0.00037s] ('nousinnihal2004@gmail.com', '$2b$12$uV1atLa2mS2659e8IJOul.maTso7PV83U/KAl0KAlIZ/ia..S3zfW', 'Nousin', 'student')
+2026-03-19 02:39:21,215 - sqlalchemy.engine.Engine - INFO - [generated in 0.00037s] ('nousinnihal2004@gmail.com', '$2b$12$uV1atLa2mS2659e8IJOul.maTso7PV83U/KAl0KAlIZ/ia..S3zfW', 'Nousin', 'student')
+2026-03-19 02:39:21,220 INFO sqlalchemy.engine.Engine INSERT INTO student_profiles (user_id, university, major, graduation_year, phone_number, linkedin_url, github_url) VALUES ($1::UUID, $2::VARCHAR, $3::VARCHAR, $4::INTEGER, $5::VARCHAR, $6::VARCHAR, $7::VARCHAR) RETURNING student_profiles.id, student_profiles.created_at, student_profiles.updated_at
+2026-03-19 02:39:21,220 - sqlalchemy.engine.Engine - INFO - INSERT INTO student_profiles (user_id, university, major, graduation_year, phone_number, linkedin_url, github_url) VALUES ($1::UUID, $2::VARCHAR, $3::VARCHAR, $4::INTEGER, $5::VARCHAR, $6::VARCHAR, $7::VARCHAR) RETURNING student_profiles.id, student_profiles.created_at, student_profiles.updated_at
+2026-03-19 02:39:21,220 INFO sqlalchemy.engine.Engine [generated in 0.00030s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'), None, None, None, None, None, None)
+2026-03-19 02:39:21,220 - sqlalchemy.engine.Engine - INFO - [generated in 0.00030s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'), None, None, None, None, None, None)
+2026-03-19 02:39:21,224 INFO sqlalchemy.engine.Engine COMMIT
+2026-03-19 02:39:21,224 - sqlalchemy.engine.Engine - INFO - COMMIT
+2026-03-19 02:39:21,227 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:39:21,227 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:39:21,230 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:39:21,230 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:39:21,230 INFO sqlalchemy.engine.Engine [generated in 0.00030s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,230 - sqlalchemy.engine.Engine - INFO - [generated in 0.00030s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,232 - app.services.user_service - INFO - Created user: 10b81562-be93-4735-bcbc-a011c56c8864
+2026-03-19 02:39:21,255 - app.api.auth - INFO - User nousinnihal2004@gmail.com signed up successfully
+INFO:     127.0.0.1:60452 - "POST /api/v1/auth/signup HTTP/1.1" 200 OK
+2026-03-19 02:39:21,260 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:39:21,260 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:60452 - "OPTIONS /api/v1/resumes/user/10b81562-be93-4735-bcbc-a011c56c8864 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49995 - "OPTIONS /api/v1/matches/student/10b81562-be93-4735-bcbc-a011c56c8864 HTTP/1.1" 200 OK
+2026-03-19 02:39:21,433 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:39:21,433 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:39:21,434 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:39:21,434 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:39:21,435 INFO sqlalchemy.engine.Engine [generated in 0.00044s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,435 - sqlalchemy.engine.Engine - INFO - [generated in 0.00044s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,449 INFO sqlalchemy.engine.Engine SELECT resumes.id, resumes.user_id, resumes.file_name, resumes.file_url, resumes.file_size, resumes.uploaded_at, resumes.extracted_text, resumes.extracted_skills, resumes.education, resumes.experience, resumes.status, resumes.extra_metadata, resumes.created_at, resumes.updated_at 
+FROM resumes 
+WHERE resumes.user_id = $1::UUID ORDER BY resumes.uploaded_at DESC
+2026-03-19 02:39:21,449 - sqlalchemy.engine.Engine - INFO - SELECT resumes.id, resumes.user_id, resumes.file_name, resumes.file_url, resumes.file_size, resumes.uploaded_at, resumes.extracted_text, resumes.extracted_skills, resumes.education, resumes.experience, resumes.status, resumes.extra_metadata, resumes.created_at, resumes.updated_at 
+FROM resumes 
+WHERE resumes.user_id = $1::UUID ORDER BY resumes.uploaded_at DESC
+2026-03-19 02:39:21,450 INFO sqlalchemy.engine.Engine [generated in 0.00049s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,450 - sqlalchemy.engine.Engine - INFO - [generated in 0.00049s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,461 - app.services.resume_service - ERROR - Error getting resumes for user 10b81562-be93-4735-bcbc-a011c56c8864: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column resumes.extra_metadata does not exist
+[SQL: SELECT resumes.id, resumes.user_id, resumes.file_name, resumes.file_url, resumes.file_size, resumes.uploaded_at, resumes.extracted_text, resumes.extracted_skills, resumes.education, resumes.experience, resumes.status, resumes.extra_metadata, resumes.created_at, resumes.updated_at 
+FROM resumes 
+WHERE resumes.user_id = $1::UUID ORDER BY resumes.uploaded_at DESC]
+[parameters: (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+INFO:     127.0.0.1:49995 - "GET /api/v1/resumes/user/10b81562-be93-4735-bcbc-a011c56c8864 HTTP/1.1" 200 OK
+2026-03-19 02:39:21,463 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:39:21,463 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:39:21,524 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:39:21,524 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:39:21,524 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:39:21,524 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:39:21,524 INFO sqlalchemy.engine.Engine [cached since 0.09015s ago] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,524 - sqlalchemy.engine.Engine - INFO - [cached since 0.09015s ago] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,530 INFO sqlalchemy.engine.Engine SELECT matches.id, matches.resume_id, matches.job_id, matches.student_id, matches.recruiter_id, matches.overall_score, matches.skill_score, matches.experience_score, matches.semantic_score, matches.matched_skills, matches.missing_skills, matches.explanation, matches.status, matches.created_at, matches.updated_at 
+FROM matches 
+WHERE matches.student_id = $1::UUID ORDER BY matches.overall_score DESC
+2026-03-19 02:39:21,530 - sqlalchemy.engine.Engine - INFO - SELECT matches.id, matches.resume_id, matches.job_id, matches.student_id, matches.recruiter_id, matches.overall_score, matches.skill_score, matches.experience_score, matches.semantic_score, matches.matched_skills, matches.missing_skills, matches.explanation, matches.status, matches.created_at, matches.updated_at 
+FROM matches 
+WHERE matches.student_id = $1::UUID ORDER BY matches.overall_score DESC
+2026-03-19 02:39:21,531 INFO sqlalchemy.engine.Engine [generated in 0.00026s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:39:21,531 - sqlalchemy.engine.Engine - INFO - [generated in 0.00026s] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+INFO:     127.0.0.1:60452 - "GET /api/v1/matches/student/10b81562-be93-4735-bcbc-a011c56c8864 HTTP/1.1" 200 OK
+2026-03-19 02:39:21,544 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:39:21,544 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:64712 - "OPTIONS /api/v1/resumes/upload HTTP/1.1" 200 OK
+2026-03-19 02:40:32,437 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:40:32,437 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:40:32,440 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:40:32,440 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:40:32,440 INFO sqlalchemy.engine.Engine [cached since 71.01s ago] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:40:32,440 - sqlalchemy.engine.Engine - INFO - [cached since 71.01s ago] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:40:32,467 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:40:32,467 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:40:32,467 INFO sqlalchemy.engine.Engine [cached since 71.03s ago] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:40:32,467 - sqlalchemy.engine.Engine - INFO - [cached since 71.03s ago] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:40:32,469 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:40:32,469 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-03-19 02:40:32,471 - app.services.resume_service - ERROR - Error uploading resume for user 10b81562-be93-4735-bcbc-a011c56c8864: one of the hex, bytes, bytes_le, fields, or int arguments must be given
+INFO:     127.0.0.1:64712 - "POST /api/v1/resumes/upload HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:64322 - "OPTIONS /api/v1/auth/logout HTTP/1.1" 200 OK
+2026-03-19 02:40:42,609 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:40:42,609 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:40:42,609 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:40:42,609 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.id = $1::UUID
+2026-03-19 02:40:42,610 INFO sqlalchemy.engine.Engine [cached since 81.18s ago] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:40:42,610 - sqlalchemy.engine.Engine - INFO - [cached since 81.18s ago] (UUID('10b81562-be93-4735-bcbc-a011c56c8864'),)
+2026-03-19 02:40:42,614 - app.api.auth - INFO - User nousinnihal2004@gmail.com logged out
+INFO:     127.0.0.1:64322 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK
+2026-03-19 02:40:42,623 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:40:42,623 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:61656 - "OPTIONS /api/v1/auth/signup HTTP/1.1" 200 OK
+2026-03-19 02:41:02,328 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:02,328 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:02,329 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:02,329 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:02,329 INFO sqlalchemy.engine.Engine [cached since 101.5s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:02,329 - sqlalchemy.engine.Engine - INFO - [cached since 101.5s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:02,331 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:02,331 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:61656 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:08,616 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:08,616 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:08,616 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:08,616 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:08,616 INFO sqlalchemy.engine.Engine [cached since 107.7s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:08,616 - sqlalchemy.engine.Engine - INFO - [cached since 107.7s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:08,626 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:08,626 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:51421 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:16,624 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:16,624 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:16,625 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:16,625 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:16,625 INFO sqlalchemy.engine.Engine [cached since 115.8s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:16,625 - sqlalchemy.engine.Engine - INFO - [cached since 115.8s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:16,630 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:16,630 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:53425 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:31,760 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:31,760 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:31,760 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:31,760 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:31,760 INFO sqlalchemy.engine.Engine [cached since 130.9s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:31,760 - sqlalchemy.engine.Engine - INFO - [cached since 130.9s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:31,762 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:31,762 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59683 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:33,983 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:33,983 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:33,983 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:33,983 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:33,983 INFO sqlalchemy.engine.Engine [cached since 133.1s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:33,983 - sqlalchemy.engine.Engine - INFO - [cached since 133.1s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:33,986 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:33,986 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59683 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:34,168 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:34,168 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:34,168 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:34,168 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:34,169 INFO sqlalchemy.engine.Engine [cached since 133.3s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:34,169 - sqlalchemy.engine.Engine - INFO - [cached since 133.3s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:34,171 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:34,171 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59683 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:34,360 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:34,360 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:34,361 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:34,361 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:34,361 INFO sqlalchemy.engine.Engine [cached since 133.5s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:34,361 - sqlalchemy.engine.Engine - INFO - [cached since 133.5s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:34,363 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:34,363 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59683 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:34,561 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:34,561 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:34,561 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:34,561 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:34,561 INFO sqlalchemy.engine.Engine [cached since 133.7s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:34,561 - sqlalchemy.engine.Engine - INFO - [cached since 133.7s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:34,563 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:34,563 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59683 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:34,756 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:34,756 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:34,757 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:34,757 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:34,757 INFO sqlalchemy.engine.Engine [cached since 133.9s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:34,757 - sqlalchemy.engine.Engine - INFO - [cached since 133.9s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:34,759 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:34,759 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:59683 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:41:52,272 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:41:52,272 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:41:52,273 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:52,273 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:41:52,273 INFO sqlalchemy.engine.Engine [cached since 151.4s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:52,273 - sqlalchemy.engine.Engine - INFO - [cached since 151.4s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:41:52,274 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:41:52,274 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:53521 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+2026-03-19 02:43:34,620 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-19 02:43:34,620 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-03-19 02:43:34,624 INFO sqlalchemy.engine.Engine SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:43:34,624 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.email, users.password_hash, users.name, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2026-03-19 02:43:34,624 INFO sqlalchemy.engine.Engine [cached since 253.8s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:43:34,624 - sqlalchemy.engine.Engine - INFO - [cached since 253.8s ago] ('nousinnihal2004@gmail.com',)
+2026-03-19 02:43:34,632 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-03-19 02:43:34,632 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+INFO:     127.0.0.1:57210 - "POST /api/v1/auth/signup HTTP/1.1" 400 Bad Request
+WARNING:  WatchFiles detected changes in 'app\services\user_service.py'. Reloading...
