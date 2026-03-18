@@ -62,22 +62,35 @@ class UserService:
             )
 
             self.db.add(user)
-            await self.db.commit()
-            await self.db.refresh(user)
+            await self.db.flush()  # Provide user.id without committing transaction yet
 
             # Create profile based on role
             if user_data.role == "student":
-                await self._create_student_profile(user.id, user_data)
+                profile = StudentProfile(
+                    user_id=user.id,
+                    university=getattr(user_data, 'university', None),
+                    major=getattr(user_data, 'major', None),
+                    graduation_year=getattr(user_data, 'graduation_year', None)
+                )
+                self.db.add(profile)
             elif user_data.role == "recruiter":
-                await self._create_recruiter_profile(user.id, user_data)
+                profile = RecruiterProfile(
+                    user_id=user.id,
+                    company=getattr(user_data, 'company', None) or "Not Provided",
+                    position=getattr(user_data, 'position', None)
+                )
+                self.db.add(profile)
+
+            await self.db.commit()
+            await self.db.refresh(user)
 
             logger.info(f"Created user: {user.id}")
             return user
 
         except Exception as e:
             await self.db.rollback()
-            logger.error(f"Error creating user: {e}")
-            return None
+            logger.error(f"Error creating user {user_data.email}: {e}", exc_info=True)
+            raise e
 
     async def update_user(self, user_id: UUID, user_data: UserUpdate) -> Optional[User]:
         """Update user information."""
