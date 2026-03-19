@@ -134,6 +134,13 @@ app.include_router(matches.router, prefix=f"{api_prefix}/matches", tags=["Matche
 app.include_router(analytics.router, prefix=f"{api_prefix}/analytics", tags=["Analytics"])
 app.include_router(gdpr.router, prefix=f"{api_prefix}/gdpr", tags=["GDPR"])
 
+from .api import admin as admin_router
+app.include_router(
+    admin_router.router,
+    prefix=f"{api_prefix}/admin",
+    tags=["Admin"],
+)
+
 
 # Global exception handler
 @app.exception_handler(Exception)
