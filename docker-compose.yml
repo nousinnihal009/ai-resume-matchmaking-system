@@ -63,6 +63,29 @@ services:
       - app-network
     restart: unless-stopped
 
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      celery -A app.worker.celery_app beat
+      --loglevel=info
+      --scheduler=celery.beat.PersistentScheduler
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/resume_matcher}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/0}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set in .env}
+      - DEBUG=${DEBUG:-false}
+    depends_on:
+      - redis
+    networks:
+      - app-network
+    restart: unless-stopped
+
   frontend:
     build:
       context: .
@@ -113,3 +136,4 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  upload_data:
