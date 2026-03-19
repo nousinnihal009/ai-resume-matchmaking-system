@@ -50,6 +50,50 @@ async def match_resume_to_jobs(
         match_service = MatchService(db)
         matches = await match_service.match_resume_to_jobs(resume_id)
 
+        try:
+            from app.core.config import settings
+            from app.core.email import EmailService
+            from app.schemas.email import MatchNotificationPayload, RecruiterMatchPayload
+            import asyncio
+            
+            dashboard_url = f"{settings.frontend_url}/student"
+            recruiter_url = f"{settings.frontend_url}/recruiter"
+            
+            for match in matches:
+                student = await match_service._get_user_by_id(match.student_id)
+                recruiter = await match_service._get_user_by_id(match.recruiter_id)
+                job = await match_service._get_job_by_id(match.job_id)
+                
+                if student and recruiter and job:
+                    asyncio.create_task(
+                        EmailService.send_match_notification(
+                            MatchNotificationPayload(
+                                to_email=student.email,
+                                to_name=student.name,
+                                job_title=job.title,
+                                company_name=job.company,
+                                match_score=int(match.overall_score * 100),
+                                match_id=str(match.id),
+                                dashboard_url=dashboard_url,
+                            )
+                        )
+                    )
+                    asyncio.create_task(
+                        EmailService.send_recruiter_match_notification(
+                            RecruiterMatchPayload(
+                                to_email=recruiter.email,
+                                to_name=recruiter.name,
+                                candidate_name=student.name,
+                                job_title=job.title,
+                                match_score=int(match.overall_score * 100),
+                                match_id=str(match.id),
+                                dashboard_url=recruiter_url,
+                            )
+                        )
+                    )
+        except Exception as exc:
+            logger.error("email_dispatch_failed", error=str(exc))
+
         match_data = [MatchBase.model_validate(match) for match in matches]
 
         return APIResponse(
@@ -96,6 +140,50 @@ async def match_job_to_candidates(
 
         match_service = MatchService(db)
         matches = await match_service.match_job_to_candidates(job_id)
+
+        try:
+            from app.core.config import settings
+            from app.core.email import EmailService
+            from app.schemas.email import MatchNotificationPayload, RecruiterMatchPayload
+            import asyncio
+            
+            dashboard_url = f"{settings.frontend_url}/student"
+            recruiter_url = f"{settings.frontend_url}/recruiter"
+            
+            for match in matches:
+                student = await match_service._get_user_by_id(match.student_id)
+                recruiter = await match_service._get_user_by_id(match.recruiter_id)
+                job = await match_service._get_job_by_id(match.job_id)
+                
+                if student and recruiter and job:
+                    asyncio.create_task(
+                        EmailService.send_match_notification(
+                            MatchNotificationPayload(
+                                to_email=student.email,
+                                to_name=student.name,
+                                job_title=job.title,
+                                company_name=job.company,
+                                match_score=int(match.overall_score * 100),
+                                match_id=str(match.id),
+                                dashboard_url=dashboard_url,
+                            )
+                        )
+                    )
+                    asyncio.create_task(
+                        EmailService.send_recruiter_match_notification(
+                            RecruiterMatchPayload(
+                                to_email=recruiter.email,
+                                to_name=recruiter.name,
+                                candidate_name=student.name,
+                                job_title=job.title,
+                                match_score=int(match.overall_score * 100),
+                                match_id=str(match.id),
+                                dashboard_url=recruiter_url,
+                            )
+                        )
+                    )
+        except Exception as exc:
+            logger.error("email_dispatch_failed", error=str(exc))
 
         match_data = [MatchBase.model_validate(match) for match in matches]
 
