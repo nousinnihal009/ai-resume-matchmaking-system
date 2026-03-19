@@ -58,9 +58,24 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI application
 app = FastAPI(
-    title=settings.app_name,
+    title="AI Resume Matchmaking API",
+    description=(
+        "Production API for the AI-powered resume-to-job matching platform. "
+        "Supports student resume management, recruiter job postings, "
+        "ML-driven match scoring, and GDPR-compliant data operations."
+    ),
     version=settings.version,
-    debug=settings.debug,
+    contact={
+        "name": "Platform Engineering",
+        "email": "engineering@resumematcher.com",
+    },
+    license_info={
+        "name": "MIT",
+    },
+    # Disable interactive docs in production
+    docs_url="/docs" if settings.debug else None,
+    redoc_url="/redoc" if settings.debug else None,
+    openapi_url="/openapi.json" if settings.debug else None,
     lifespan=lifespan
 )
 
