@@ -20,13 +20,39 @@ class BaseSchema(BaseModel):
     }
 
 
-class APIResponse(BaseSchema, Generic[T]):
-    """Standard API response format."""
-    success: bool
-    data: Optional[T] = None
-    error: Optional[str] = None
-    message: Optional[str] = None
-    timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
+class APIResponse(BaseModel, Generic[T]):
+    """
+    Standard API response envelope used by all endpoints.
+
+    All responses from this API follow this shape regardless of
+    the data type returned. Check `success` first, then read
+    `data` on success or `error` on failure.
+
+    Example success:
+        {"success": true, "data": {...}, "message": "Done"}
+
+    Example failure:
+        {"success": false, "error": "Not found", "data": null}
+    """
+    success: bool = Field(
+        description="True if the request succeeded, false otherwise"
+    )
+    data: T | None = Field(
+        default=None,
+        description="Response payload. Shape varies by endpoint."
+    )
+    error: str | None = Field(
+        default=None,
+        description="Error message. Only present when success is false."
+    )
+    message: str | None = Field(
+        default=None,
+        description="Human-readable status message."
+    )
+    timestamp: str | None = Field(
+        default_factory=lambda: datetime.now().isoformat(),
+        description="ISO 8601 timestamp of the response."
+    )
 
 
 class PaginatedResponse(BaseSchema, Generic[T]):
