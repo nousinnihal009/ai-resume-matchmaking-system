@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
 from .core.config import settings
-from .api import auth, resumes, jobs, matches, analytics
+from .api import auth, resumes, jobs, matches, analytics, gdpr
 from .db import engine, Base
 import sentry_sdk
 # from slowapi import _rate_limit_exceeded_handler
@@ -132,6 +132,7 @@ app.include_router(resumes.router, prefix=f"{api_prefix}/resumes", tags=["Resume
 app.include_router(jobs.router, prefix=f"{api_prefix}/jobs", tags=["Jobs"])
 app.include_router(matches.router, prefix=f"{api_prefix}/matches", tags=["Matches"])
 app.include_router(analytics.router, prefix=f"{api_prefix}/analytics", tags=["Analytics"])
+app.include_router(gdpr.router, prefix=f"{api_prefix}/gdpr", tags=["GDPR"])
 
 
 # Global exception handler
