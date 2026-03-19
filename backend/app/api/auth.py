@@ -16,8 +16,8 @@ from ..core.security import create_access_token, get_current_user
 from ..core.config import settings
 from ..core.limiter import limiter
 
-logger = logging.getLogger(__name__)
-
+from app.core.logging_config import get_logger
+logger = get_logger(__name__)
 router = APIRouter()
 
 
@@ -58,7 +58,7 @@ async def login(
         # Return user data with token (in a real app, you'd return token separately)
         user_data = UserBase.model_validate(user)
 
-        logger.info(f"User {user.email} logged in successfully")
+        logger.info("user_login_success", email=user.email, user_id=str(user.id), role=user.role)
 
         return APIResponse(
             success=True,
@@ -73,7 +73,7 @@ async def login(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Login error for {login_data.email}: {e}")
+        logger.error("user_login_failed", email=login_data.email, error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -135,7 +135,7 @@ async def signup(
 
         user_response = UserBase.model_validate(user)
 
-        logger.info(f"User {user.email} signed up successfully")
+        logger.info("user_signup_success", email=user.email, user_id=str(user.id), role=user.role)
 
         return APIResponse(
             success=True,
@@ -150,7 +150,7 @@ async def signup(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Signup error for {signup_data.email}: {e}")
+        logger.error("user_signup_failed", email=signup_data.email, error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -166,7 +166,7 @@ async def logout(
         # In a stateless JWT system, logout is handled client-side
         # by removing the token. We could implement token blacklisting here.
 
-        logger.info(f"User {current_user.email} logged out")
+        logger.info("user_logout_success", email=current_user.email, user_id=str(current_user.id))
 
         return APIResponse(
             success=True,
@@ -175,7 +175,7 @@ async def logout(
         )
 
     except Exception as e:
-        logger.error(f"Logout error for user {current_user.id}: {e}")
+        logger.error("user_logout_failed", user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -195,7 +195,7 @@ async def get_current_user_info(
         )
 
     except Exception as e:
-        logger.error(f"Get current user error for {current_user.id}: {e}")
+        logger.error("get_user_info_failed", user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
