@@ -20,6 +20,7 @@ celery = Celery(
     "resume_matcher",
     broker=settings.celery_broker_url,
     backend=settings.celery_result_backend,
+    include=["app.worker.tasks", "app.worker.gdpr_tasks"],
 )
 
 # ── Celery configuration ──────────────────────────────────────────────
@@ -54,5 +55,4 @@ celery.conf.update(
     result_expires=3600,
 )
 
-# Auto-discover task modules
-celery.autodiscover_tasks(["app.worker"])
+
