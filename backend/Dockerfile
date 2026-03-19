@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --compile -r requirements.txt
 
 # Copy application code
 COPY app/ ./app/
@@ -20,8 +20,13 @@ COPY app/ ./app/
 COPY alembic.ini .
 COPY alembic/ ./alembic/
 
-# Create uploads directory
-RUN mkdir -p uploads
+# Create uploads directory and switch to non-root user
+RUN mkdir -p uploads && \
+    useradd -m -s /bin/bash appuser && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
 
 # Expose port
 EXPOSE 8000
