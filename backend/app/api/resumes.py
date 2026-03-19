@@ -16,8 +16,8 @@ from ..schemas.user import UserBase
 from ..schemas.base import APIResponse
 from ..core.security import get_current_user
 
-logger = logging.getLogger(__name__)
-
+from app.core.logging_config import get_logger
+logger = get_logger(__name__)
 router = APIRouter()
 
 
@@ -68,7 +68,7 @@ async def upload_resume(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Resume upload error: {e}")
+        logger.error("resume_upload_failed", user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -104,7 +104,7 @@ async def get_user_resumes(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Get user resumes error: {e}")
+        logger.error("get_user_resumes_failed", user_id=str(user_id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -144,7 +144,7 @@ async def get_resume(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Get resume error: {e}")
+        logger.error("get_resume_failed", resume_id=str(resume_id), user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -191,7 +191,7 @@ async def delete_resume(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Delete resume error: {e}")
+        logger.error("delete_resume_failed", resume_id=str(resume_id), user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
