@@ -22,6 +22,8 @@ services:
       - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
       - SENTRY_TRACES_SAMPLE_RATE=${SENTRY_TRACES_SAMPLE_RATE:-0.1}
       - SENTRY_PROFILES_SAMPLE_RATE=${SENTRY_PROFILES_SAMPLE_RATE:-0.1}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/0}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
     depends_on:
       db:
         condition: service_healthy
@@ -35,6 +37,31 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A app.worker.celery_app:celery worker --loglevel=info -Q resume_processing,matching,gdpr --concurrency=2
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/resume_matcher}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set in .env}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/0}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
 
   frontend:
     build:
