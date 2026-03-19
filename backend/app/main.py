@@ -25,6 +25,16 @@ logger = get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan context manager."""
+    # Startup validation for critical production secrets
+    if not settings.debug:
+        if settings.secret_key == "supersecretkey" or len(settings.secret_key) < 32:
+            logger.critical("startup_failed_insecure_secret_key")
+            raise ValueError("CRITICAL: Insecure SECRET_KEY in production.")
+            
+        if "*" in settings.cors_origins:
+            logger.critical("startup_failed_insecure_cors")
+            raise ValueError("CRITICAL: Wildcard CORS allowed in production.")
+
     # Startup
     configure_logging()
     logger.info(
