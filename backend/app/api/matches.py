@@ -21,13 +21,17 @@ logger = get_logger(__name__)
 router = APIRouter()
 
 
-@router.post("/resume/{resume_id}", response_model=APIResponse[List[MatchBase]])
+@router.post("/resume/{resume_id}", response_model=APIResponse[dict])
 async def match_resume_to_jobs(
     resume_id: UUID,
     current_user: UserBase = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
-) -> APIResponse[List[MatchBase]]:
-    """Find matching jobs for a resume."""
+) -> APIResponse[dict]:
+    """Dispatch matching for a resume against all active jobs.
+
+    The actual matching is performed asynchronously by a Celery worker.
+    Returns the Celery task ID so the client can poll for status.
+    """
     try:
         # Validate user permissions (students can match their own resumes, admins can match any)
         if current_user.role not in ["admin", "student"]:
@@ -47,59 +51,21 @@ async def match_resume_to_jobs(
                     detail="Not authorized to match this resume"
                 )
 
-        match_service = MatchService(db)
-        matches = await match_service.match_resume_to_jobs(resume_id)
+        # Dispatch to Celery worker
+        from app.worker.tasks import batch_match_task
+        task = batch_match_task.delay(resume_id=str(resume_id))
 
-        try:
-            from app.core.config import settings
-            from app.core.email import EmailService
-            from app.schemas.email import MatchNotificationPayload, RecruiterMatchPayload
-            import asyncio
-            
-            dashboard_url = f"{settings.frontend_url}/student"
-            recruiter_url = f"{settings.frontend_url}/recruiter"
-            
-            for match in matches:
-                student = await match_service._get_user_by_id(match.student_id)
-                recruiter = await match_service._get_user_by_id(match.recruiter_id)
-                job = await match_service._get_job_by_id(match.job_id)
-                
-                if student and recruiter and job:
-                    asyncio.create_task(
-                        EmailService.send_match_notification(
-                            MatchNotificationPayload(
-                                to_email=student.email,
-                                to_name=student.name,
-                                job_title=job.title,
-                                company_name=job.company,
-                                match_score=int(match.overall_score * 100),
-                                match_id=str(match.id),
-                                dashboard_url=dashboard_url,
-                            )
-                        )
-                    )
-                    asyncio.create_task(
-                        EmailService.send_recruiter_match_notification(
-                            RecruiterMatchPayload(
-                                to_email=recruiter.email,
-                                to_name=recruiter.name,
-                                candidate_name=student.name,
-                                job_title=job.title,
-                                match_score=int(match.overall_score * 100),
-                                match_id=str(match.id),
-                                dashboard_url=recruiter_url,
-                            )
-                        )
-                    )
-        except Exception as exc:
-            logger.error("email_dispatch_failed", error=str(exc))
-
-        match_data = [MatchBase.model_validate(match) for match in matches]
+        logger.info(
+            "batch_match_dispatched",
+            resume_id=str(resume_id),
+            user_id=str(current_user.id),
+            celery_task_id=task.id,
+        )
 
         return APIResponse(
             success=True,
-            data=match_data,
-            message=f"Found {len(match_data)} job matches"
+            data={"task_id": task.id, "status": "queued"},
+            message="Matching dispatched — results will be available shortly"
         )
 
     except HTTPException:
@@ -112,13 +78,17 @@ async def match_resume_to_jobs(
         )
 
 
-@router.post("/job/{job_id}", response_model=APIResponse[List[MatchBase]])
+@router.post("/job/{job_id}", response_model=APIResponse[dict])
 async def match_job_to_candidates(
     job_id: UUID,
     current_user: UserBase = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
-) -> APIResponse[List[MatchBase]]:
-    """Find matching candidates for a job."""
+) -> APIResponse[dict]:
+    """Dispatch matching for a job against all available resumes.
+
+    The actual matching is performed asynchronously by a Celery worker.
+    Returns the Celery task ID so the client can poll for status.
+    """
     try:
         # Validate user permissions (recruiters can match their own jobs, admins can match any)
         if current_user.role not in ["admin", "recruiter"]:
@@ -138,59 +108,21 @@ async def match_job_to_candidates(
                     detail="Not authorized to match this job"
                 )
 
-        match_service = MatchService(db)
-        matches = await match_service.match_job_to_candidates(job_id)
+        # Dispatch to Celery worker
+        from app.worker.tasks import batch_match_task
+        task = batch_match_task.delay(job_id=str(job_id))
 
-        try:
-            from app.core.config import settings
-            from app.core.email import EmailService
-            from app.schemas.email import MatchNotificationPayload, RecruiterMatchPayload
-            import asyncio
-            
-            dashboard_url = f"{settings.frontend_url}/student"
-            recruiter_url = f"{settings.frontend_url}/recruiter"
-            
-            for match in matches:
-                student = await match_service._get_user_by_id(match.student_id)
-                recruiter = await match_service._get_user_by_id(match.recruiter_id)
-                job = await match_service._get_job_by_id(match.job_id)
-                
-                if student and recruiter and job:
-                    asyncio.create_task(
-                        EmailService.send_match_notification(
-                            MatchNotificationPayload(
-                                to_email=student.email,
-                                to_name=student.name,
-                                job_title=job.title,
-                                company_name=job.company,
-                                match_score=int(match.overall_score * 100),
-                                match_id=str(match.id),
-                                dashboard_url=dashboard_url,
-                            )
-                        )
-                    )
-                    asyncio.create_task(
-                        EmailService.send_recruiter_match_notification(
-                            RecruiterMatchPayload(
-                                to_email=recruiter.email,
-                                to_name=recruiter.name,
-                                candidate_name=student.name,
-                                job_title=job.title,
-                                match_score=int(match.overall_score * 100),
-                                match_id=str(match.id),
-                                dashboard_url=recruiter_url,
-                            )
-                        )
-                    )
-        except Exception as exc:
-            logger.error("email_dispatch_failed", error=str(exc))
-
-        match_data = [MatchBase.model_validate(match) for match in matches]
+        logger.info(
+            "batch_match_dispatched",
+            job_id=str(job_id),
+            user_id=str(current_user.id),
+            celery_task_id=task.id,
+        )
 
         return APIResponse(
             success=True,
-            data=match_data,
-            message=f"Found {len(match_data)} candidate matches"
+            data={"task_id": task.id, "status": "queued"},
+            message="Matching dispatched — results will be available shortly"
         )
 
     except HTTPException:
@@ -201,6 +133,35 @@ async def match_job_to_candidates(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
         )
+
+
+@router.get("/task/{task_id}", response_model=APIResponse[dict])
+async def get_task_status(
+    task_id: str,
+    current_user: UserBase = Depends(get_current_user),
+) -> APIResponse[dict]:
+    """Poll for the status of a Celery matching task.
+
+    Returns the task state and result (if completed).
+    """
+    from app.worker.celery_app import celery
+    result = celery.AsyncResult(task_id)
+
+    response = {
+        "task_id": task_id,
+        "status": result.state,
+    }
+
+    if result.ready():
+        response["result"] = result.result
+    elif result.failed():
+        response["error"] = str(result.result)
+
+    return APIResponse(
+        success=True,
+        data=response,
+        message=f"Task status: {result.state}"
+    )
 
 
 @router.get("/student/{student_id}", response_model=APIResponse[List[MatchBase]])
