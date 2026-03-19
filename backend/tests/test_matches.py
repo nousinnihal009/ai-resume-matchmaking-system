@@ -59,32 +59,41 @@ class TestMatchScoring:
         )
         assert response.status_code == 200
 
-    async def test_match_score_is_between_0_and_1(
+    async def test_match_trigger_returns_task_id(
         self,
         client: AsyncClient,
         student_user, student_headers: dict,
         recruiter_user, recruiter_headers: dict
     ):
+        """
+        Match trigger endpoint now returns a task_id for async processing.
+        Score results are available via the task polling endpoint.
+        """
         files = {"file": ("resume.txt", io.BytesIO(make_fake_txt()), "text/plain")}
         resume_resp = await client.post(
             f"{RESUME_PREFIX}/upload",
             files=files,
             headers=student_headers
         )
-        resume_id = resume_resp.json()["data"]["resume"]["id"]
-        
-        await client.post(
-            JOB_PREFIX, json=make_job_payload(), headers=recruiter_headers
-        )
+        resume_data = resume_resp.json()
 
+        # Get the resume_id — adjust field path to match actual response
+        resume_id = resume_data.get("data", {}).get("resume", {}).get("id")
+
+        # Trigger matching
         response = await client.post(
             f"{MATCH_PREFIX}/resume/{resume_id}",
             headers=student_headers
         )
+
+        assert response.status_code == 200
         data = response.json()
-        if data["data"]:
-            score = data["data"][0]["overall_score"]
-            assert 0 <= score <= 1
+        assert data["success"] is True
+
+        # New contract: endpoint returns task_id, not synchronous score
+        assert "task_id" in data["data"]
+        assert data["data"]["task_id"] is not None
+        assert data["data"]["status"] == "queued"
 
     async def test_match_score_invalid_resume_id_returns_403(
         self,
