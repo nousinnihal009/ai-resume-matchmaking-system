@@ -137,6 +137,22 @@ async def signup(
 
         logger.info("user_signup_success", email=user.email, user_id=str(user.id), role=user.role)
 
+        try:
+            from app.core.email import EmailService
+            from app.schemas.email import WelcomeEmailPayload
+            import asyncio
+            asyncio.create_task(
+                EmailService.send_welcome_email(
+                    WelcomeEmailPayload(
+                        to_email=user.email,
+                        to_name=user.name,
+                        role=user.role,
+                    )
+                )
+            )
+        except Exception as exc:
+            logger.error("welcome_email_dispatch_failed", user_id=str(user.id), error=str(exc))
+
         return APIResponse(
             success=True,
             data=AuthResponse(
