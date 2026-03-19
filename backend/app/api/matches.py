@@ -16,8 +16,8 @@ from ..schemas.user import UserBase
 from ..schemas.base import APIResponse
 from ..core.security import get_current_user
 
-logger = logging.getLogger(__name__)
-
+from app.core.logging_config import get_logger
+logger = get_logger(__name__)
 router = APIRouter()
 
 
@@ -61,7 +61,7 @@ async def match_resume_to_jobs(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Match resume to jobs error: {e}")
+        logger.error("match_resume_to_jobs_failed", resume_id=str(resume_id), user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -108,7 +108,7 @@ async def match_job_to_candidates(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Match job to candidates error: {e}")
+        logger.error("match_job_to_candidates_failed", job_id=str(job_id), user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -144,7 +144,7 @@ async def get_student_matches(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Get student matches error: {e}")
+        logger.error("get_student_matches_failed", student_id=str(student_id), user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -180,7 +180,7 @@ async def get_recruiter_matches(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Get recruiter matches error: {e}")
+        logger.error("get_recruiter_matches_failed", recruiter_id=str(recruiter_id), user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -207,7 +207,7 @@ async def get_job_matches(
         )
 
     except Exception as e:
-        logger.error(f"Get job matches error: {e}")
+        logger.error("get_job_matches_failed", job_id=str(job_id), user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
@@ -261,7 +261,7 @@ async def update_match_status(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Update match status error: {e}")
+        logger.error("update_match_status_failed", match_id=str(match_id), user_id=str(current_user.id), error=str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
