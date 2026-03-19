@@ -72,6 +72,28 @@ jobs:
       - name: Run test coverage
         run: pytest -m "not slow" --cov=app --cov-report=term-missing
 
+  security-audit:
+    name: Backend Security Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies and security tools
+        run: |
+          pip install -r requirements.txt
+          pip install safety bandit
+      - name: Run Bandit (Static Analysis)
+        run: bandit -r app/ -c pyproject.toml || bandit -r app/
+      - name: Run Safety (Dependency Audit)
+        run: safety check -r requirements.txt || true # Ignore failure for now but log
+
   docker-compose-validate:
     name: Docker Compose Validation
     runs-on: ubuntu-latest
@@ -82,3 +104,13 @@ jobs:
         env:
           SECRET_KEY: ci-test-secret-key
           POSTGRES_PASSWORD: ci-test-password
+
+  docker-build:
+    name: Production Docker Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker compose -f docker-compose.yml build backend
+      - name: Inspect image size
+        run: docker images
