@@ -216,7 +216,7 @@ describe('matchAPI', () => {
     const result = await matchAPI.matchResumeToJobs('resume-001');
     expect(result.success).toBe(true);
     expect(Array.isArray(result.data)).toBe(true);
-    expect(result.data?.[0]?.overallScore).toBe(0.82);
+    expect(result.data?.[0]?.overallScore).toBe(82);
   });
 
   it('matchJobToCandidates returns array with overallScore field', async () => {
@@ -224,7 +224,7 @@ describe('matchAPI', () => {
     expect(result.success).toBe(true);
     const item = result.data?.[0];
     expect(typeof item?.overallScore).toBe('number');
-    expect(item?.overallScore).toBe(0.82);
+    expect(item?.overallScore).toBe(82);
   });
 
   it('getMatchesByStudent returns array of matches', async () => {
