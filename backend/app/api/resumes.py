@@ -3,7 +3,7 @@ Resume API routes.
 """
 import logging
 from typing import List
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,6 +15,7 @@ from ..schemas.resume import ResumeBase, ResumeUploadResponse
 from ..schemas.user import UserBase
 from ..schemas.base import APIResponse
 from ..core.security import get_current_user
+from ..core.config import settings
 
 from app.core.logging_config import get_logger
 logger = get_logger(__name__)
@@ -27,7 +28,13 @@ async def upload_resume(
     current_user: UserBase = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ) -> APIResponse[ResumeUploadResponse]:
-    """Upload and process a resume file."""
+    """Upload and process a resume file.
+
+    The file is saved to disk and a database row is created with
+    status='processing'. Actual text/skill extraction is dispatched
+    to a Celery background worker so the HTTP response returns
+    immediately.
+    """
     try:
         # Validate user is a student
         if current_user.role != "student":
@@ -39,30 +46,60 @@ async def upload_resume(
         # Read file content
         file_content = await file.read()
 
-        # Process resume
         resume_service = ResumeService(db)
-        resume = await resume_service.upload_resume(
-            file_content=file_content,
-            filename=file.filename,
-            user_id=current_user.id
-        )
 
-        if not resume:
+        # Validate file before saving
+        if not resume_service._is_valid_file(file.filename, len(file_content)):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Failed to process resume"
+                detail="Invalid file type or file too large"
             )
+
+        # Save file to disk
+        from pathlib import Path
+        upload_dir = Path(settings.upload_directory)
+        upload_dir.mkdir(exist_ok=True)
+        file_path = upload_dir / f"{current_user.id}_{uuid4().hex}_{file.filename}"
+        with open(file_path, "wb") as f:
+            f.write(file_content)
+
+        # Create resume record with status='processing'
+        from ..db.models import Resume
+        resume = Resume(
+            user_id=current_user.id,
+            file_name=file.filename,
+            file_url=str(file_path),
+            file_size=len(file_content),
+            status="processing",
+        )
+        db.add(resume)
+        await db.commit()
+        await db.refresh(resume)
+
+        # Dispatch to Celery worker for async processing
+        from app.worker.tasks import process_resume_task
+        task = process_resume_task.delay(
+            resume_id=str(resume.id),
+            file_path=str(file_path),
+        )
+
+        logger.info(
+            "resume_upload_queued",
+            resume_id=str(resume.id),
+            user_id=str(current_user.id),
+            celery_task_id=task.id,
+        )
 
         # Create response
         response_data = ResumeUploadResponse(
             resume=ResumeBase.model_validate(resume),
-            processing_status="completed"
+            processing_status="queued"
         )
 
         return APIResponse(
             success=True,
             data=response_data,
-            message="Resume uploaded and processed successfully"
+            message="Resume uploaded — processing in background"
         )
 
     except HTTPException:
