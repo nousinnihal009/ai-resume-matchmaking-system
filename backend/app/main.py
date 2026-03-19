@@ -12,24 +12,34 @@ from sqlalchemy import text
 from .core.config import settings
 from .api import auth, resumes, jobs, matches, analytics
 from .db import engine, Base
+import sentry_sdk
 # from slowapi import _rate_limit_exceeded_handler
 # from slowapi.errors import RateLimitExceeded
 from .core.limiter import limiter
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+from app.core.logging_config import configure_logging, get_logger
+
+logger = get_logger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan context manager."""
     # Startup
-    logger.info("Starting up FastAPI application...")
-
+    configure_logging()
+    logger.info(
+        "application_startup",
+        version=settings.version,
+        debug=settings.debug,
+        environment="development" if settings.debug else "production",
+    )
+    from app.core.sentry import initialize_sentry
+    initialize_sentry(
+        dsn=settings.sentry_dsn,
+        environment=settings.sentry_environment,
+        traces_sample_rate=settings.sentry_traces_sample_rate,
+        profiles_sample_rate=settings.sentry_profiles_sample_rate,
+    )
     # Schema is managed by Alembic migrations.
     # To apply: alembic upgrade head
     # To create a new migration: alembic revision --autogenerate -m "description"
@@ -38,12 +48,12 @@ async def lifespan(app: FastAPI):
     # async with engine.begin() as conn:
     #     await conn.run_sync(Base.metadata.create_all)
 
-    logger.info("Database schema managed by Alembic migrations")
+    logger.info("db_schema_managed_by_alembic")
 
     yield
 
     # Shutdown
-    logger.info("Shutting down FastAPI application...")
+    logger.info("application_shutdown")
 
 
 # Create FastAPI application
@@ -65,6 +75,24 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def request_logging_middleware(request: Request, call_next):
+    """Log every HTTP request with method, path, and response status."""
+    import time
+    start_time = time.perf_counter()
+    response = await call_next(request)
+    duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
+    logger.info(
+        "http_request",
+        method=request.method,
+        path=request.url.path,
+        status_code=response.status_code,
+        duration_ms=duration_ms,
+        client_ip=request.client.host if request.client else "unknown",
+    )
+    return response
 
 
 # Health check endpoint
@@ -110,7 +138,7 @@ app.include_router(analytics.router, prefix=f"{api_prefix}/analytics", tags=["An
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     """Global exception handler."""
-    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+    logger.error("unhandled_exception", error=str(exc))
     return JSONResponse(
         status_code=500,
         content={
