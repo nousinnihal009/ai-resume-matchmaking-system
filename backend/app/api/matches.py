@@ -10,7 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..db.session import get_db
 from ..services.match_service import MatchService
-from ..services.user_service import UserService
+from ..services.resume_service import ResumeService
+from ..services.job_service import JobService
 from ..schemas.match import MatchBase, MatchUpdate
 from ..schemas.user import UserBase
 from ..schemas.base import APIResponse
@@ -42,8 +43,8 @@ async def match_resume_to_jobs(
 
         # If student, check if they own the resume
         if current_user.role == "student":
-            user_service = UserService(db)
-            resumes = await user_service.get_resumes_by_user(current_user.id)
+            resume_service = ResumeService(db)
+            resumes = await resume_service.get_resumes_by_user(current_user.id)
             resume_ids = [str(r.id) for r in resumes]
             if str(resume_id) not in resume_ids:
                 raise HTTPException(
@@ -99,8 +100,9 @@ async def match_job_to_candidates(
 
         # If recruiter, check if they own the job
         if current_user.role == "recruiter":
-            user_service = UserService(db)
-            jobs = await user_service.get_jobs_by_recruiter(current_user.id)
+            from ..services.job_service import JobService
+            job_service = JobService(db)
+            jobs = await job_service.get_jobs_by_recruiter(current_user.id)
             job_ids = [str(j.id) for j in jobs]
             if str(job_id) not in job_ids:
                 raise HTTPException(
