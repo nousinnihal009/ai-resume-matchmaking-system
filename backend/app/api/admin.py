@@ -51,7 +51,7 @@ def require_admin(current_user: User = Depends(get_current_user)) -> User:
     return current_user
 
 
-@router.get("/stats", response_model=APIResponse)
+@router.get("/stats", response_model=APIResponse, operation_id="admin_get_system_stats")
 async def get_system_stats(
     admin: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
@@ -66,7 +66,7 @@ async def get_system_stats(
     return APIResponse(success=True, data=stats)
 
 
-@router.get("/users", response_model=APIResponse)
+@router.get("/users", response_model=APIResponse, operation_id="admin_list_users")
 async def list_users(
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=50, ge=1, le=100),
@@ -92,7 +92,7 @@ async def list_users(
     return APIResponse(success=True, data=result)
 
 
-@router.patch("/users/{user_id}/status", response_model=APIResponse)
+@router.patch("/users/{user_id}/status", response_model=APIResponse, operation_id="admin_update_user_status")
 async def update_user_status(
     user_id: str,
     update: UserStatusUpdate,
@@ -128,7 +128,7 @@ async def update_user_status(
         )
 
 
-@router.get("/matches", response_model=APIResponse)
+@router.get("/matches", response_model=APIResponse, operation_id="admin_get_match_audit_log")
 async def get_match_audit_log(
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=50, ge=1, le=100),
@@ -149,7 +149,7 @@ async def get_match_audit_log(
     return APIResponse(success=True, data=result)
 
 
-@router.get("/health", response_model=APIResponse)
+@router.get("/health", response_model=APIResponse, operation_id="admin_get_platform_health")
 async def get_platform_health(
     admin: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
