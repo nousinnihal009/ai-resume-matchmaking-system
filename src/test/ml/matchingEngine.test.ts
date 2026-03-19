@@ -11,21 +11,33 @@
 import { describe, it, expect } from 'vitest';
 import { matchResumeToJob } from '@/services/ml/matchingEngine';
 
+import type { Resume, Job } from '@/types/models';
+
 // ── Fixtures ──────────────────────────────────────────────────────────
 
-const perfectResume: any = {
+const strongResume: Resume = {
   id: 'resume-1',
   userId: 'user-1',
+  fileName: 'strong.pdf',
+  fileUrl: 'http://test.com/strong.pdf',
+  fileSize: 1000,
+  uploadedAt: new Date(),
   extractedSkills: ['Python', 'FastAPI', 'PostgreSQL', 'Docker'],
   extractedText: 'Senior Python developer with 5 years experience in FastAPI',
-  experience: [{ startDate: '2016-01-01', endDate: '2021-01-01' }], // 5 years
+  education: [],
+  experience: [{ company: 'Test', position: 'Dev', description: 'desc', startDate: '2016-01-01', endDate: '2021-01-01' }], // 5 years
   embeddingVector: new Array(384).fill(1),
   status: 'completed',
 };
 
-const perfectJob: any = {
+const strongJob: Job = {
   id: 'job-1',
   recruiterId: 'rec-1',
+  title: 'Senior Dev',
+  company: 'Company A',
+  location: 'Remote',
+  locationType: 'remote',
+  postedAt: new Date(),
   requiredSkills: ['Python', 'FastAPI', 'PostgreSQL', 'Docker'],
   preferredSkills: [],
   description: 'Senior Python developer with 5 years FastAPI experience',
@@ -34,19 +46,29 @@ const perfectJob: any = {
   status: 'active',
 };
 
-const weakResume: any = {
+const weakResume: Resume = {
   id: 'resume-2',
   userId: 'user-2',
+  fileName: 'weak.pdf',
+  fileUrl: 'http://test.com/weak.pdf',
+  fileSize: 1000,
+  uploadedAt: new Date(),
   extractedSkills: ['Watercolor', 'Pottery', 'Sculpture'],
   extractedText: 'Artist with 3 years of studio experience',
-  experience: [{ startDate: '2018-01-01', endDate: '2021-01-01' }], // 3 years
+  education: [],
+  experience: [{ company: 'Studio', position: 'Artist', description: 'art', startDate: '2018-01-01', endDate: '2021-01-01' }], // 3 years
   embeddingVector: new Array(384).fill(0),
   status: 'completed',
 };
 
-const weakJob: any = {
+const weakJob: Job = {
   id: 'job-2',
   recruiterId: 'rec-2',
+  title: 'DevOps',
+  company: 'Company B',
+  location: 'NY',
+  locationType: 'onsite',
+  postedAt: new Date(),
   requiredSkills: ['Kubernetes', 'Terraform', 'Rust', 'WASM', 'Go'],
   preferredSkills: [],
   description: 'Systems engineer with infrastructure automation expertise',
@@ -55,19 +77,29 @@ const weakJob: any = {
   status: 'active',
 };
 
-const emptyResume: any = {
+const emptyResume: Resume = {
   id: 'resume-3',
   userId: 'user-3',
+  fileName: 'empty.pdf',
+  fileUrl: 'http://test.com/empty.pdf',
+  fileSize: 100,
+  uploadedAt: new Date(),
   extractedSkills: [],
   extractedText: '',
+  education: [],
   experience: [],
   embeddingVector: new Array(384).fill(0),
   status: 'completed',
 };
 
-const emptyJob: any = {
+const emptyJob: Job = {
   id: 'job-3',
   recruiterId: 'rec-3',
+  title: 'Intern',
+  company: 'Company C',
+  location: 'Remote',
+  locationType: 'remote',
+  postedAt: new Date(),
   requiredSkills: [],
   preferredSkills: [],
   description: '',
@@ -86,12 +118,12 @@ describe('Matching Engine — score range', () => {
   });
 
   it('always returns overallScore <= 1', () => {
-    const result = matchResumeToJob(perfectResume, perfectJob);
+    const result = matchResumeToJob(strongResume, strongJob);
     expect(result.overallScore).toBeLessThanOrEqual(1);
   });
 
   it('returns high score (>0.7) for identical skill sets', () => {
-    const result = matchResumeToJob(perfectResume, perfectJob);
+    const result = matchResumeToJob(strongResume, strongJob);
     expect(result.overallScore).toBeGreaterThan(0.7);
   });
 
@@ -129,18 +161,18 @@ describe('Matching Engine — score range', () => {
 describe('Matching Engine — result shape', () => {
 
   it('returns strengths as a non-null array', () => {
-    const result = matchResumeToJob(perfectResume, perfectJob);
+    const result = matchResumeToJob(strongResume, strongJob);
     expect(result.explanation).toHaveProperty('strengths');
     expect(Array.isArray(result.explanation.strengths)).toBe(true);
   });
 
   it('returns gaps as a non-null array', () => {
     const gapResume = {
-      ...perfectResume,
+      ...strongResume,
       extractedSkills: ['Python'],
     };
     const gapJob = {
-      ...perfectJob,
+      ...strongJob,
       requiredSkills: ['Python', 'FastAPI', 'Kubernetes', 'Terraform'],
     };
     const result = matchResumeToJob(gapResume, gapJob);
@@ -150,18 +182,18 @@ describe('Matching Engine — result shape', () => {
   });
 
   it('returns recommendations as a non-null array', () => {
-    const result = matchResumeToJob(perfectResume, perfectJob);
+    const result = matchResumeToJob(strongResume, strongJob);
     expect(result.explanation).toHaveProperty('recommendations');
     expect(Array.isArray(result.explanation.recommendations)).toBe(true);
   });
 
   it('missingSkills contains skills present in job but not in resume', () => {
     const gapResume = {
-      ...perfectResume,
+      ...strongResume,
       extractedSkills: ['Python'],
     };
     const gapJob = {
-      ...perfectJob,
+      ...strongJob,
       requiredSkills: ['Python', 'Kubernetes'],
     };
     const result = matchResumeToJob(gapResume, gapJob);
@@ -171,11 +203,11 @@ describe('Matching Engine — result shape', () => {
 
   it('matchedSkills contains skills present in both resume and job', () => {
     const matchResume = {
-      ...perfectResume,
+      ...strongResume,
       extractedSkills: ['Python', 'FastAPI'],
     };
     const matchJob = {
-      ...perfectJob,
+      ...strongJob,
       requiredSkills: ['Python', 'FastAPI', 'Kubernetes'],
     };
     const result = matchResumeToJob(matchResume, matchJob);
@@ -191,21 +223,21 @@ describe('Matching Engine — edge cases', () => {
 
   it('handles empty resumeSkills without throwing', () => {
     expect(() =>
-      matchResumeToJob({ ...perfectResume, extractedSkills: [] }, perfectJob)
+      matchResumeToJob({ ...strongResume, extractedSkills: [] }, strongJob)
     ).not.toThrow();
   });
 
   it('handles empty jobSkills without throwing', () => {
     expect(() =>
-      matchResumeToJob(perfectResume, { ...perfectJob, requiredSkills: [] })
+      matchResumeToJob(strongResume, { ...strongJob, requiredSkills: [] })
     ).not.toThrow();
   });
 
   it('handles empty text fields without throwing', () => {
     expect(() =>
       matchResumeToJob(
-        { ...perfectResume, extractedText: '' },
-        { ...perfectJob, description: '' }
+        { ...strongResume, extractedText: '' },
+        { ...strongJob, description: '' }
       )
     ).not.toThrow();
   });
@@ -213,8 +245,8 @@ describe('Matching Engine — edge cases', () => {
   it('handles zero experience values without throwing', () => {
     expect(() =>
       matchResumeToJob(
-        { ...perfectResume, experience: [] },
-        { ...perfectJob, experienceLevel: 'internship' }
+        { ...strongResume, experience: [] },
+        { ...strongJob, experienceLevel: 'internship' }
       )
     ).not.toThrow();
   });
