@@ -22,7 +22,16 @@ router = APIRouter()
 
 
 @limiter.limit("5/minute")
-@router.post("/login", response_model=APIResponse)
+@router.post(
+    "/login",
+    response_model=APIResponse,
+    summary="Authenticate user and return JWT token",
+    description=(
+        "Validates email and password, returns a JWT access token "
+        "valid for ACCESS_TOKEN_EXPIRE_MINUTES minutes. "
+        "Rate limited to 5 requests per minute per IP."
+    ),
+)
 async def login(
     request: Request,
     login_data: LoginRequest,
@@ -81,7 +90,16 @@ async def login(
 
 
 @limiter.limit("3/minute")
-@router.post("/signup", response_model=APIResponse)
+@router.post(
+    "/signup",
+    response_model=APIResponse,
+    summary="Create a new user account",
+    description=(
+        "Creates student or recruiter account. Sends a welcome "
+        "email asynchronously. Rate limited to 3 requests per "
+        "minute per IP."
+    ),
+)
 async def signup(
     request: Request,
     signup_data: SignupRequest,
@@ -173,7 +191,11 @@ async def signup(
         )
 
 
-@router.post("/logout", response_model=APIResponse[dict])
+@router.post(
+    "/logout",
+    response_model=APIResponse[dict],
+    summary="Invalidate current session",
+)
 async def logout(
     current_user: UserBase = Depends(get_current_user)
 ) -> APIResponse[dict]:
@@ -198,7 +220,13 @@ async def logout(
         )
 
 
-@router.get("/me", response_model=APIResponse[UserBase])
+@router.get(
+    "/me",
+    response_model=APIResponse[UserBase],
+    summary="Get current authenticated user",
+    description="Returns the user object for the authenticated "
+                "request based on the provided JWT token.",
+)
 async def get_current_user_info(
     current_user: UserBase = Depends(get_current_user)
 ) -> APIResponse[UserBase]:
