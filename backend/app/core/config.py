@@ -80,6 +80,25 @@ class Settings(BaseSettings):
     # External Services (placeholders)
     openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
 
+    # Sentry
+    sentry_dsn: str = Field(default="", env="SENTRY_DSN")
+    sentry_environment: str = Field(default="development", env="SENTRY_ENVIRONMENT")
+    sentry_traces_sample_rate: float = Field(default=0.1, env="SENTRY_TRACES_SAMPLE_RATE")
+    sentry_profiles_sample_rate: float = Field(default=0.1, env="SENTRY_PROFILES_SAMPLE_RATE")
+
+    # SendGrid
+    sendgrid_api_key: str = Field(default="", env="SENDGRID_API_KEY")
+    sendgrid_from_email: str = Field(default="noreply@resumematcher.dev", env="SENDGRID_FROM_EMAIL")
+    sendgrid_from_name: str = Field(default="Resume Matcher", env="SENDGRID_FROM_NAME")
+    frontend_url: str = Field(default="http://localhost:3000", env="FRONTEND_URL")
+
+    # Celery
+    celery_broker_url: str = Field(default="redis://localhost:6379/0", env="CELERY_BROKER_URL")
+    celery_result_backend: str = Field(default="redis://localhost:6379/1", env="CELERY_RESULT_BACKEND")
+
+    # GDPR
+    gdpr_data_retention_days: int = Field(default=730, env="GDPR_DATA_RETENTION_DAYS")
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=False,
