@@ -82,7 +82,17 @@ def process_resume_task(self, resume_id: str, file_path: str) -> dict:
             skill_extractor.extract_skills(extracted_text)
         )
 
-        # ── 4. Update the row ───────────────────────────────────────
+        # ── 4. Generate real semantic embedding ─────────────────────
+        from app.pipeline.embeddings import generate_embedding
+        logger.info("resume_embedding_started, resume_id=%s", resume_id)
+        embedding_vector = generate_embedding(extracted_text)
+        logger.info(
+            "resume_embedding_complete, resume_id=%s, dimensions=%d",
+            resume_id,
+            len(embedding_vector),
+        )
+
+        # ── 5. Update the row ───────────────────────────────────────
         resume.extracted_text = extracted_text
         resume.extracted_skills = skill_data["extracted_skills"]
         resume.extra_metadata = {
@@ -262,6 +272,74 @@ def batch_match_task(self, resume_id: str | None = None, job_id: str | None = No
     except Exception as exc:
         session.rollback()
         logger.error("batch_match_task failed: %s", exc)
+        raise self.retry(exc=exc)
+
+    finally:
+        session.close()
+
+
+@celery.task(
+    bind=True,
+    name="app.worker.tasks.embed_job",
+    max_retries=3,
+    default_retry_delay=60,
+)
+def embed_job(self, job_id: str) -> dict:
+    """
+    Generate and store semantic embedding for a job posting.
+
+    Called when a new job is created so it is immediately
+    searchable via pgvector similarity search.
+
+    Args:
+        job_id: UUID string of the Job record to embed
+
+    Returns:
+        dict with job_id and embedding_dim
+    """
+    from app.db.models import Job
+    from app.pipeline.embeddings import generate_embedding
+
+    logger.info("job_embedding_started, job_id=%s", job_id)
+    session = _make_sync_session()
+
+    try:
+        job = session.execute(
+            select(Job).where(Job.id == UUID(job_id))
+        ).scalar_one_or_none()
+
+        if not job:
+            return {"job_id": job_id, "status": "not_found"}
+
+        # Combine title + description for richer job embedding
+        job_text = f"{job.title}\n{job.description}"
+        if hasattr(job, 'required_skills') and job.required_skills:
+            skills_text = " ".join(job.required_skills)
+            job_text = f"{job_text}\nRequired skills: {skills_text}"
+
+        embedding = generate_embedding(job_text)
+        job.job_embedding_vector = embedding
+        session.commit()
+
+        logger.info(
+            "job_embedding_complete, job_id=%s, dimensions=%d",
+            job_id,
+            len(embedding),
+        )
+
+        return {
+            "job_id": job_id,
+            "status": "embedded",
+            "embedding_dim": len(embedding),
+        }
+
+    except Exception as exc:
+        session.rollback()
+        logger.error(
+            "job_embedding_failed, job_id=%s, error=%s",
+            job_id,
+            str(exc),
+        )
         raise self.retry(exc=exc)
 
     finally:
