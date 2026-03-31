@@ -20,10 +20,12 @@ COPY app/ ./app/
 COPY alembic.ini .
 COPY alembic/ ./alembic/
 
-# Create uploads directory and switch to non-root user
+# Create uploads directory, model cache, and switch to non-root user
 RUN mkdir -p uploads && \
+    mkdir -p /app/.model_cache && \
     useradd -m -s /bin/bash appuser && \
-    chown -R appuser:appuser /app
+    chown -R appuser:appuser /app && \
+    chown -R appuser:appuser /app/.model_cache
 
 # Switch to non-root user
 USER appuser
