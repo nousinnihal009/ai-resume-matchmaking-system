@@ -43,6 +43,14 @@ class ResumeBase(BaseSchema):
     experience: List[Experience] = Field(default_factory=list)
     status: str  # 'processing' | 'completed' | 'failed'
     extra_metadata: Dict[str, Any] = Field(default_factory=dict)
+    seniority_level: str | None = None
+    years_of_experience: float | None = None
+    career_trajectory: str | None = None
+    domain_expertise: list[str] | None = None
+    impact_metrics: list[str] | None = None
+    context_aware_skills: dict | None = None
+    resume_analysis: dict | None = None
+    analysis_version: str | None = None
     created_at: datetime
     updated_at: datetime
 
