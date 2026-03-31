@@ -45,6 +45,15 @@ async def create_job(
                 detail="Failed to create job posting"
             )
 
+        # Dispatch embedding task for new job
+        # This makes the job searchable via semantic similarity immediately
+        try:
+            from app.worker.tasks import embed_job
+            embed_job.delay(str(job.id))
+            logger.info(f"job_embedding_dispatched, job_id={str(job.id)}")
+        except Exception as embed_err:
+            logger.error(f"job_embedding_dispatch_failed, job_id={str(job.id)}, error={embed_err}")
+
         return APIResponse(
             success=True,
             data=JobBase.model_validate(job),
