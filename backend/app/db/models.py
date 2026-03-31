@@ -95,6 +95,17 @@ class Resume(Base):
     experience = Column(JSONB, server_default="[]")
     status = Column(String(20), server_default="processing")
     extra_metadata = Column(JSONB, server_default="{}")
+    
+    # Deep understanding fields — populated by Gemini analysis
+    seniority_level = Column(String(50), nullable=True)
+    years_of_experience = Column(Float, nullable=True)
+    career_trajectory = Column(String(100), nullable=True)
+    domain_expertise = Column(JSONB, nullable=True)
+    impact_metrics = Column(JSONB, nullable=True)
+    context_aware_skills = Column(JSONB, nullable=True)
+    resume_analysis = Column(JSONB, nullable=True)
+    analysis_version = Column(String(20), nullable=True)
+    
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
