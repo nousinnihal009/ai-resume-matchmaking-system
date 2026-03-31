@@ -74,7 +74,15 @@ class Settings(BaseSettings):
 
     # ML Pipeline
     embedding_model: str = Field(default="sentence-transformers/all-MiniLM-L6-v2", env="EMBEDDING_MODEL")
-    embedding_dimension: int = 384
+    embedding_dimension: int = Field(default=384, env="EMBEDDING_DIMENSION")
+    embedding_cache_dir: str = Field(
+        default="/app/.model_cache",
+        env="EMBEDDING_CACHE_DIR"
+    )
+    embedding_batch_size: int = Field(
+        default=32,
+        env="EMBEDDING_BATCH_SIZE"
+    )
     similarity_threshold: float = Field(default=0.7, env="SIMILARITY_THRESHOLD")
 
     # External Services (placeholders)
