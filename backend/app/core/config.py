@@ -106,6 +106,21 @@ class Settings(BaseSettings):
 
     # GDPR
     gdpr_data_retention_days: int = Field(default=730, env="GDPR_DATA_RETENTION_DAYS")
+    gemini_api_key: str = Field(
+        default="", env="GEMINI_API_KEY"
+    )
+    gemini_model: str = Field(
+        default="gemini-1.5-flash", env="GEMINI_MODEL"
+    )
+    gemini_timeout_seconds: int = Field(
+        default=30, env="GEMINI_TIMEOUT_SECONDS"
+    )
+    gemini_max_retries: int = Field(
+        default=3, env="GEMINI_MAX_RETRIES"
+    )
+    gemini_cache_ttl_seconds: int = Field(
+        default=86400, env="GEMINI_CACHE_TTL_SECONDS"
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",
