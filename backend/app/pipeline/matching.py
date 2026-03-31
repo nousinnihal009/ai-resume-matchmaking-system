@@ -1,5 +1,8 @@
 """
 Matching pipeline for resume-job matching.
+
+Upgraded to use real sentence-transformers embeddings for semantic
+similarity scoring. Weights: 50% semantic / 30% skill / 20% experience.
 """
 import logging
 from typing import List, Dict, Any, Optional, Tuple
@@ -7,6 +10,7 @@ from collections import defaultdict
 
 from .embeddings import embedding_service
 from .skill_extraction import skill_extractor
+from app.core.model_manager import cosine_similarity, encode_text
 
 logger = logging.getLogger(__name__)
 
@@ -92,12 +96,13 @@ class MatchingEngine:
         """
         Calculate comprehensive match score between resume and job.
 
-        Args:
-            resume_data: Resume data
-            job_data: Job data
+        Scoring weights (upgraded):
+          50% — Semantic similarity (sentence-transformers cosine sim)
+          30% — Skill overlap (matched skills / required skills)
+          20% — Experience fit (level-based scoring)
 
-        Returns:
-            Match result with scores and explanations
+        Returns the exact same shape as the previous implementation
+        to maintain backward compatibility with all callers.
         """
         try:
             # Extract skills from resume and job
@@ -110,21 +115,22 @@ class MatchingEngine:
                 resume_skills, job_required, job_preferred
             )
 
-            # Calculate experience score (placeholder - would need more sophisticated logic)
+            # Calculate experience score
             experience_score = self._calculate_experience_score(
                 resume_data, job_data
             )
 
-            # Calculate semantic similarity score
+            # Calculate semantic similarity score using REAL embeddings
             semantic_score = await self._calculate_semantic_score(
                 resume_data, job_data
             )
 
-            # Calculate overall score (weighted combination)
+            # Calculate overall score with NEW weights:
+            # 50% semantic + 30% skill + 20% experience
             overall_score = (
-                skill_score * 0.5 +
-                experience_score * 0.2 +
-                semantic_score * 0.3
+                semantic_score * 0.5 +
+                skill_score * 0.3 +
+                experience_score * 0.2
             )
 
             # Generate explanation
@@ -205,11 +211,6 @@ class MatchingEngine:
         This is a placeholder - real implementation would analyze work experience.
         """
         try:
-            # Placeholder logic - in real implementation, this would:
-            # - Parse resume experience entries
-            # - Compare with job experience requirements
-            # - Calculate relevance scores
-
             job_level = job_data.get('experience_level', 'entry')
             level_scores = {
                 'internship': 0.2,
@@ -220,11 +221,6 @@ class MatchingEngine:
 
             # Placeholder: assume moderate experience match
             base_score = level_scores.get(job_level, 0.5)
-
-            # Could be enhanced with:
-            # - Years of experience analysis
-            # - Industry relevance
-            # - Role progression analysis
 
             return min(1.0, base_score)
 
@@ -238,31 +234,40 @@ class MatchingEngine:
         job_data: Dict[str, Any]
     ) -> float:
         """
-        Calculate semantic similarity score using embeddings.
+        Calculate semantic similarity score using real sentence-transformers
+        embeddings.
+
+        Uses pre-computed embeddings if available in the data dict,
+        otherwise generates them on the fly via model_manager.
         """
         try:
-            # Get or generate embeddings
+            # Check for pre-computed embeddings first
+            resume_vec = resume_data.get('embedding_vector', None)
+            job_vec = job_data.get('job_embedding_vector', None)
+
+            if resume_vec and job_vec:
+                # Use pre-computed vectors directly
+                return cosine_similarity(resume_vec, job_vec)
+
+            # Fall back to generating from text
             resume_text = resume_data.get('extracted_text', '')
             job_text = job_data.get('description', '')
 
             if not resume_text or not job_text:
-                return 0.5
+                return 0.0
 
-            # Generate embeddings
-            resume_embedding = await embedding_service.embed_text(resume_text)
-            job_embedding = await embedding_service.embed_text(job_text)
+            # Generate real embeddings via sentence-transformers
+            resume_embedding = encode_text(resume_text)
+            job_embedding = encode_text(job_text)
 
             if not resume_embedding or not job_embedding:
-                return 0.5
+                return 0.0
 
-            # Calculate similarity
-            similarity = embedding_service.cosine_similarity(resume_embedding, job_embedding)
-
-            return similarity
+            return cosine_similarity(resume_embedding, job_embedding)
 
         except Exception as e:
             logger.error(f"Error calculating semantic score: {e}")
-            return 0.5
+            return 0.0
 
     def _generate_explanation(
         self,
@@ -278,8 +283,8 @@ class MatchingEngine:
         Generate human-readable explanation for the match.
         """
         try:
-            # Determine overall assessment
-            overall_score = (skill_score * 0.5 + experience_score * 0.2 + semantic_score * 0.3)
+            # Determine overall assessment using NEW weights
+            overall_score = (semantic_score * 0.5 + skill_score * 0.3 + experience_score * 0.2)
 
             if overall_score >= 0.8:
                 summary = "Excellent match! Strong alignment across all criteria."
