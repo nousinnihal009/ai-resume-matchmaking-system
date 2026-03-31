@@ -233,3 +233,159 @@ async def delete_resume(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
         )
+
+
+@router.post(
+    "/{resume_id}/analyze",
+    response_model=APIResponse,
+    summary="Run deep AI analysis on a resume",
+    description=(
+        "Triggers Gemini-powered deep understanding analysis "
+        "on a processed resume. Returns structured intelligence "
+        "including seniority, career trajectory, impact metrics, "
+        "context-aware skills, and hidden skill inference. "
+        "Results are cached — repeated calls return cached result."
+    ),
+    operation_id="analyze_resume_deep",
+)
+async def analyze_resume_deep(
+    resume_id: str,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Run deep Gemini analysis on a resume.
+    Students can only analyze their own resumes.
+    Recruiters can analyze any resume.
+    """
+    from app.db.models import Resume
+    from sqlalchemy import select
+
+    # Fetch resume
+    result = await db.execute(
+        select(Resume).where(Resume.id == UUID(resume_id))
+    )
+    resume = result.scalar_one_or_none()
+
+    if not resume:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Resume not found.",
+        )
+
+    # Authorization: students only see their own resumes
+    if (current_user.role == "student" and
+            str(resume.user_id) != str(current_user.id)):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied.",
+        )
+
+    if not resume.extracted_text:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Resume has not been processed yet. "
+                   "Wait for processing to complete.",
+        )
+
+    # Run Gemini analysis
+    from app.pipeline.resume_intelligence import analyze_resume
+    logger.info(
+        "deep_analysis_requested",
+        resume_id=resume_id,
+        user_id=str(current_user.id),
+    )
+
+    analysis = await analyze_resume(resume.extracted_text)
+
+    # Persist results to database
+    resume.seniority_level = analysis.get("seniority_level")
+    resume.years_of_experience = analysis.get("years_of_experience")
+    resume.career_trajectory = analysis.get("career_trajectory")
+    resume.domain_expertise = analysis.get("domain_expertise", [])
+    resume.impact_metrics = analysis.get("impact_metrics", [])
+    resume.context_aware_skills = analysis.get(
+        "context_aware_skills", {}
+    )
+    resume.resume_analysis = analysis
+    resume.analysis_version = analysis.get("analysis_version")
+    await db.commit()
+    await db.refresh(resume)
+
+    logger.info(
+        "deep_analysis_complete",
+        resume_id=resume_id,
+        source=analysis.get("analysis_source"),
+        seniority=analysis.get("seniority_level"),
+    )
+
+    return APIResponse(
+        success=True,
+        data=analysis,
+        message=f"Analysis complete. "
+                f"Source: {analysis.get('analysis_source', 'unknown')}",
+    )
+
+
+@router.get(
+    "/{resume_id}/intelligence",
+    response_model=APIResponse,
+    summary="Get resume intelligence analysis",
+    description=(
+        "Returns the stored deep analysis for a resume. "
+        "Run POST /{resume_id}/analyze first to generate the "
+        "analysis. Returns 404 if analysis has not been run."
+    ),
+    operation_id="get_resume_intelligence",
+)
+async def get_resume_intelligence(
+    resume_id: str,
+    current_user: UserBase = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Retrieve stored intelligence analysis for a resume."""
+    from app.db.models import Resume
+    from sqlalchemy import select
+
+    result = await db.execute(
+        select(Resume).where(Resume.id == UUID(resume_id))
+    )
+    resume = result.scalar_one_or_none()
+
+    if not resume:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Resume not found.",
+        )
+
+    if (current_user.role == "student" and
+            str(resume.user_id) != str(current_user.id)):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied.",
+        )
+
+    if not resume.resume_analysis:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No analysis found. Run POST "
+                   f"/resumes/{resume_id}/analyze first.",
+        )
+
+    # Build structured intelligence response
+    intelligence = {
+        "resume_id": resume_id,
+        "seniority_level": resume.seniority_level,
+        "years_of_experience": resume.years_of_experience,
+        "career_trajectory": resume.career_trajectory,
+        "domain_expertise": resume.domain_expertise or [],
+        "impact_metrics": resume.impact_metrics or [],
+        "context_aware_skills": resume.context_aware_skills or {},
+        "analysis_version": resume.analysis_version,
+        "full_analysis": resume.resume_analysis,
+    }
+
+    return APIResponse(
+        success=True,
+        data=intelligence,
+    )
