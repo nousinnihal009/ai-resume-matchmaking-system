@@ -7,6 +7,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, and_, or_
+from sqlalchemy import text as sql_text
 
 from ..db.models import Match, Resume, Job, User
 from ..schemas.match import MatchCreate, MatchUpdate, MatchFilters
