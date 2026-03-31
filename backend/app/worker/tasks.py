@@ -82,6 +82,36 @@ def process_resume_task(self, resume_id: str, file_path: str) -> dict:
             skill_extractor.extract_skills(extracted_text)
         )
 
+        # Run rule-based resume intelligence analysis
+        # Full Gemini analysis is triggered async from the API
+        from app.pipeline.resume_intelligence import analyze_resume_sync
+        logger.info(
+            "resume_intelligence_analysis_started",
+            resume_id=resume_id,
+        )
+        analysis = analyze_resume_sync(extracted_text)
+        resume.seniority_level = analysis.get("seniority_level")
+        resume.years_of_experience = analysis.get("years_of_experience")
+        resume.career_trajectory = analysis.get("career_trajectory")
+        resume.domain_expertise = analysis.get("domain_expertise", [])
+        resume.impact_metrics = analysis.get("impact_metrics", [])
+        resume.context_aware_skills = analysis.get(
+            "context_aware_skills", {}
+        )
+        resume.resume_analysis = analysis
+        resume.analysis_version = analysis.get("analysis_version")
+        session.commit()
+
+        logger.info(
+            "resume_intelligence_analysis_complete",
+            resume_id=resume_id,
+            seniority=analysis.get("seniority_level"),
+            years_exp=analysis.get("years_of_experience"),
+            impact_metrics_count=len(
+                analysis.get("impact_metrics", [])
+            ),
+        )
+
         # ── 4. Generate real semantic embedding ─────────────────────
         from app.pipeline.embeddings import generate_embedding
         logger.info("resume_embedding_started, resume_id=%s", resume_id)
