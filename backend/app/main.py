@@ -51,6 +51,29 @@ async def lifespan(app: FastAPI):
         traces_sample_rate=settings.sentry_traces_sample_rate,
         profiles_sample_rate=settings.sentry_profiles_sample_rate,
     )
+
+    # Warm up embedding model on startup
+    # Downloads ~90MB model on first run, loads from cache thereafter
+    # This prevents 30-60 second delay on the first API request
+    try:
+        logger.info("embedding_model_warmup_started")
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(
+            None,
+            lambda: __import__(
+                'app.core.model_manager',
+                fromlist=['get_embedding_model']
+            ).get_embedding_model()
+        )
+        logger.info("embedding_model_warmup_complete")
+    except Exception as exc:
+        logger.error(
+            "embedding_model_warmup_failed",
+            error=str(exc),
+            note="API will still start but first embedding "
+                 "request will be slow",
+        )
+
     # Schema is managed by Alembic migrations.
     # To apply: alembic upgrade head
     # To create a new migration: alembic revision --autogenerate -m "description"
