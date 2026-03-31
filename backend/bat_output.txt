@@ -1972,3 +1972,4 @@ Traceback (most recent call last):
   File "c:\CODES\project_nousin\ai-resume-matchmaking-system\backend\app\main.py", line 15, in <module>
     import sentry_sdk
 ModuleNotFoundError: No module named 'sentry_sdk'
+Terminate batch job (Y/N)? 
