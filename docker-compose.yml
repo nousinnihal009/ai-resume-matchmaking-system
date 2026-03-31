@@ -9,6 +9,7 @@ services:
     volumes:
       - ./backend:/app
       - /app/__pycache__
+      - model_cache:/app/.model_cache
     environment:
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/resume_matcher}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
@@ -24,6 +25,10 @@ services:
       - SENTRY_PROFILES_SAMPLE_RATE=${SENTRY_PROFILES_SAMPLE_RATE:-0.1}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/0}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      - EMBEDDING_DIMENSION=${EMBEDDING_DIMENSION:-384}
+      - EMBEDDING_CACHE_DIR=/app/.model_cache
+      - EMBEDDING_BATCH_SIZE=${EMBEDDING_BATCH_SIZE:-32}
     depends_on:
       db:
         condition: service_healthy
@@ -46,6 +51,7 @@ services:
     volumes:
       - ./backend:/app
       - /app/__pycache__
+      - model_cache:/app/.model_cache
     environment:
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/resume_matcher}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
@@ -54,6 +60,10 @@ services:
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
       - SENTRY_DSN=${SENTRY_DSN:-}
       - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      - EMBEDDING_DIMENSION=${EMBEDDING_DIMENSION:-384}
+      - EMBEDDING_CACHE_DIR=/app/.model_cache
+      - EMBEDDING_BATCH_SIZE=${EMBEDDING_BATCH_SIZE:-32}
     depends_on:
       db:
         condition: service_healthy
@@ -98,7 +108,7 @@ services:
       - app-network
 
   db:
-    image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
@@ -137,3 +147,4 @@ volumes:
   postgres_data:
   redis_data:
   upload_data:
+  model_cache:
