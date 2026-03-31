@@ -23,6 +23,62 @@ class MatchService:
         """Initialize with database session."""
         self.db = db
 
+    async def find_similar_jobs(
+        self,
+        resume_embedding: list[float],
+        limit: int = 20,
+        min_similarity: float = 0.3,
+    ) -> list[dict]:
+        """
+        Find jobs semantically similar to a resume using pgvector
+        cosine similarity search.
+
+        Uses IVFFlat index for sub-second search over large job pools.
+        Only returns active jobs above the minimum similarity threshold.
+
+        Args:
+            resume_embedding: 384-dimensional embedding vector
+            limit: Maximum number of jobs to return
+            min_similarity: Minimum cosine similarity (0.0 to 1.0)
+
+        Returns:
+            List of dicts with job_id and similarity_score, ranked
+            by similarity descending.
+        """
+        # pgvector cosine distance operator: <=>
+        # cosine similarity = 1 - cosine distance
+        result = await self.db.execute(
+            sql_text("""
+                SELECT
+                    id::text as job_id,
+                    title,
+                    company,
+                    1 - (job_embedding_vector <=> :embedding) as similarity
+                FROM jobs
+                WHERE
+                    status = 'active'
+                    AND job_embedding_vector IS NOT NULL
+                    AND 1 - (job_embedding_vector <=> :embedding) >= :min_sim
+                ORDER BY job_embedding_vector <=> :embedding
+                LIMIT :limit
+            """).bindparams(
+                embedding=str(resume_embedding),
+                min_sim=min_similarity,
+                limit=limit,
+            )
+        )
+
+        rows = result.mappings().all()
+        return [
+            {
+                "job_id": row["job_id"],
+                "title": row["title"],
+                "company": row["company"],
+                "similarity_score": float(row["similarity"]),
+            }
+            for row in rows
+        ]
+
     async def create_match(self, match_data: MatchCreate) -> Optional[Match]:
         """Create a new match record."""
         try:
