@@ -115,7 +115,24 @@ class Resume(Base):
     context_aware_skills = Column(JSONB, nullable=True)
     resume_analysis = Column(JSONB, nullable=True)
     analysis_version = Column(String(20), nullable=True)
-    
+
+    # Resume analyzer fields — populated by full analysis engine
+    analysis_score = Column(Integer, nullable=True)
+    analysis_score_breakdown = Column(JSON, nullable=True)
+    ats_parse_rate = Column(Float, nullable=True)
+    repetition_issues = Column(JSON, nullable=True)
+    spelling_issues = Column(JSON, nullable=True)
+    grammar_issues = Column(JSON, nullable=True)
+    missing_sections = Column(JSON, nullable=True)
+    present_sections = Column(JSON, nullable=True)
+    contact_info = Column(JSON, nullable=True)
+    file_analysis = Column(JSON, nullable=True)
+    design_score = Column(Integer, nullable=True)
+    design_feedback = Column(JSON, nullable=True)
+    template_suggestions = Column(JSON, nullable=True)
+    full_analysis_report = Column(JSON, nullable=True)
+    analysis_completed_at = Column(DateTime(timezone=True), nullable=True)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
