@@ -36,13 +36,13 @@ class ResumeBase(BaseSchema):
     file_name: str
     file_url: str
     file_size: int
-    uploaded_at: datetime
+    uploaded_at: Optional[datetime] = None
     extracted_text: Optional[str] = None
-    extracted_skills: List[str] = Field(default_factory=list)
-    education: List[Education] = Field(default_factory=list)
-    experience: List[Experience] = Field(default_factory=list)
+    extracted_skills: Optional[List[str]] = Field(default_factory=list)
+    education: Optional[List[Education]] = Field(default_factory=list)
+    experience: Optional[List[Experience]] = Field(default_factory=list)
     status: str  # 'processing' | 'completed' | 'failed'
-    extra_metadata: Dict[str, Any] = Field(default_factory=dict)
+    extra_metadata: Optional[Dict[str, Any]] = Field(default_factory=dict)
     seniority_level: str | None = None
     years_of_experience: float | None = None
     career_trajectory: str | None = None
@@ -51,8 +51,8 @@ class ResumeBase(BaseSchema):
     context_aware_skills: dict | None = None
     resume_analysis: dict | None = None
     analysis_version: str | None = None
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class ResumeCreate(BaseModel):
