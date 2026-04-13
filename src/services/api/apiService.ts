@@ -15,6 +15,8 @@ import type {
   LoginForm,
   SignupForm,
   JobPostingForm,
+  ResumeAnalysisReport,
+  TailoringReport,
 } from '@/types/models';
 
 // API Configuration
@@ -352,5 +354,45 @@ export const matchAPI = {
       method: 'PATCH',
       body: JSON.stringify({ status }),
     });
+  },
+};
+
+/**
+ * Resume Analysis API
+ */
+export const resumeAnalysisAPI = {
+  async runAnalysis(
+    resumeId: string,
+    forceRefresh = false,
+  ): Promise<APIResponse<ResumeAnalysisReport>> {
+    logger.info('API: Running resume analysis', { resumeId });
+    return apiRequest<ResumeAnalysisReport>(
+      `/resume-analysis/${resumeId}/analyze` +
+      (forceRefresh ? '?force_refresh=true' : ''),
+      { method: 'POST' }
+    );
+  },
+
+  async getReport(
+    resumeId: string,
+  ): Promise<APIResponse<ResumeAnalysisReport>> {
+    logger.info('API: Fetching analysis report', { resumeId });
+    return apiRequest<ResumeAnalysisReport>(
+      `/resume-analysis/${resumeId}/report`
+    );
+  },
+
+  async tailorResume(
+    resumeId: string,
+    jobDescription: string,
+  ): Promise<APIResponse<TailoringReport>> {
+    logger.info('API: Tailoring resume', { resumeId });
+    return apiRequest<TailoringReport>(
+      `/resume-analysis/${resumeId}/tailor`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ job_description: jobDescription }),
+      }
+    );
   },
 };
