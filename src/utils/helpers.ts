@@ -8,7 +8,8 @@ import { AppConfig } from '@/config/app.config';
 /**
  * Format date to readable string
  */
-export function formatDate(date: Date | string): string {
+export function formatDate(date: Date | string | undefined | null): string {
+  if (!date) return 'N/A';
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -20,7 +21,8 @@ export function formatDate(date: Date | string): string {
 /**
  * Format relative time (e.g., "2 days ago")
  */
-export function formatRelativeTime(date: Date | string): string {
+export function formatRelativeTime(date: Date | string | undefined | null): string {
+  if (!date) return 'N/A';
   const d = typeof date === 'string' ? new Date(date) : date;
   const now = new Date();
   const diffMs = now.getTime() - d.getTime();
