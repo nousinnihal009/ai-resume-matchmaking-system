@@ -5,7 +5,17 @@ from sqlalchemy import Column, String, Integer, Text, Boolean, DateTime, Float, 
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from pgvector.sqlalchemy import Vector
+try:
+    from pgvector.sqlalchemy import Vector
+except ImportError:
+    # Fallback if pgvector is not available
+    Vector = None
+
+def _vector_column(dim):
+    """Return Vector(dim) if pgvector is available, else ARRAY(Float)."""
+    if Vector is not None:
+        return Vector(dim)
+    return ARRAY(Float)
 
 Base = declarative_base()
 
@@ -142,7 +152,7 @@ class Job(Base):
     expires_at = Column(DateTime(timezone=True))
     status = Column(String(20), server_default="active")
     extra_metadata = Column(JSONB, server_default="{}")
-    job_embedding_vector = Column(Vector(384), nullable=True)
+    job_embedding_vector = Column(_vector_column(384), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -168,7 +178,7 @@ class Embedding(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
     entity_id = Column(UUID(as_uuid=True), nullable=False)
     entity_type = Column(String(20), nullable=False)
-    vector = Column(Vector(384), nullable=False)
+    vector = Column(_vector_column(384), nullable=False)
     dimension = Column(Integer, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
