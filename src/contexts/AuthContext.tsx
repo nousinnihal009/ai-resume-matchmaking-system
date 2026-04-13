@@ -28,6 +28,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const currentUser = authAPI.getCurrentUser();
     setUser(currentUser);
     setIsLoading(false);
+
+    const handleUnauthorized = () => {
+      logger.warn('Unauthorized access detected, logging out');
+      authAPI.logout().then(() => {
+        setUser(null);
+        window.location.href = '/login';
+      });
+    };
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
   }, []);
 
   const login = async (credentials: LoginForm) => {
