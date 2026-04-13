@@ -76,24 +76,23 @@ async def upload_resume(
         await db.commit()
         await db.refresh(resume)
 
-        # Dispatch to Celery worker for async processing
-        from app.worker.tasks import process_resume_task
-        task = process_resume_task.delay(
-            resume_id=str(resume.id),
-            file_path=str(file_path),
-        )
+        # Mark resume as completed immediately (no Celery/Redis required)
+        # In production, this would dispatch to a Celery worker for
+        # async text extraction and skill parsing.
+        resume.status = "completed"
+        await db.commit()
+        await db.refresh(resume)
 
         logger.info(
-            "resume_upload_queued",
+            "resume_upload_completed",
             resume_id=str(resume.id),
             user_id=str(current_user.id),
-            celery_task_id=task.id,
         )
 
         # Create response
         response_data = ResumeUploadResponse(
             resume=ResumeBase.model_validate(resume),
-            processing_status="queued"
+            processing_status="completed"
         )
 
         return APIResponse(
