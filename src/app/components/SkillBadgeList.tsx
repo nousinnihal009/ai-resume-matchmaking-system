@@ -6,9 +6,10 @@ interface SkillBadgeListProps {
   maxDisplay?: number;
 }
 
-export function SkillBadgeList({ skills, variant = 'default', maxDisplay }: SkillBadgeListProps) {
-  const displaySkills = maxDisplay ? skills.slice(0, maxDisplay) : skills;
-  const remaining = maxDisplay && skills.length > maxDisplay ? skills.length - maxDisplay : 0;
+export function SkillBadgeList({ skills = [], variant = 'default', maxDisplay }: SkillBadgeListProps) {
+  const safeSkills = skills || [];
+  const displaySkills = maxDisplay ? safeSkills.slice(0, maxDisplay) : safeSkills;
+  const remaining = maxDisplay && safeSkills.length > maxDisplay ? safeSkills.length - maxDisplay : 0;
 
   const variantClasses = {
     default: 'bg-gray-100 text-gray-800',
