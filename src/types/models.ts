@@ -253,3 +253,139 @@ export interface SortOptions {
   field: 'score' | 'date' | 'name' | 'company';
   order: 'asc' | 'desc';
 }
+
+// ==================== Resume Analysis Types ====================
+
+export interface RepetitionIssue {
+  word: string;
+  count: number;
+  severity: 'high' | 'medium';
+  suggestions: string[];
+}
+
+export interface SpellingError {
+  word: string;
+  suggestion: string;
+  context: string;
+}
+
+export interface GrammarError {
+  issue: string;
+  original: string;
+  suggestion: string;
+}
+
+export interface ContactField {
+  present: boolean;
+  masked?: string;
+  value?: string;
+}
+
+export interface ScoreCategory {
+  score: number;
+  weight: number;
+  note?: string;
+}
+
+export interface BulletRewrite {
+  original: string;
+  rewritten: string;
+  reason: string;
+}
+
+export interface TemplateSuggestion {
+  name: string;
+  description: string;
+  best_for: string;
+  ats_friendly: boolean;
+}
+
+export interface ResumeAnalysisReport {
+  overall_score: number;
+  total_issues: number;
+  score_breakdown: Record<string, ScoreCategory>;
+  content: {
+    score: number;
+    ats_parse_rate: number;
+    ats_parse_status: string;
+    quantification: {
+      quantified_achievements: string[];
+      unquantified_bullets: string[];
+      quantification_rate: number;
+      has_impact_metrics: boolean;
+      suggestion: string | null;
+    };
+    repetition: {
+      issues: RepetitionIssue[];
+      issue_count: number;
+      has_issues: boolean;
+    };
+    spelling_grammar: {
+      spelling_errors: SpellingError[];
+      grammar_errors: GrammarError[];
+      overall_quality: string;
+      language_feedback: string;
+      source: string;
+    };
+    content_quality: {
+      strengths: string[];
+      weaknesses: string[];
+      action_verb_quality: string;
+      specificity_score: number;
+      professional_tone_score: number;
+      suggestions: string[];
+      source: string;
+    };
+  };
+  sections: {
+    present: string[];
+    missing: string[];
+    essential_present: string[];
+    optional_present: string[];
+  };
+  ats_essentials: {
+    score: number;
+    file_analysis: {
+      format: string;
+      size_kb: number;
+      size_mb: number;
+      format_score: number;
+      ats_compatible: boolean;
+      size_acceptable: boolean;
+      issues: string[];
+      recommendation: string;
+    };
+    contact_info: {
+      found: Record<string, ContactField>;
+      missing: string[];
+      completeness_score: number;
+    };
+  };
+  design: {
+    score: number;
+    feedback: string[];
+    template_suggestions: TemplateSuggestion[];
+    layout_detected: string;
+  };
+  skills_analysis: {
+    score: number;
+    density: number;
+  };
+  analyzer_version: string;
+  analyzed_at: string;
+}
+
+export interface TailoringReport {
+  tailoring_score: number;
+  missing_keywords: string[];
+  keywords_present: string[];
+  bullet_rewrites: BulletRewrite[];
+  sections_to_add: string[];
+  skills_to_highlight: string[];
+  summary_rewrite: string;
+  overall_fit: string;
+  fit_explanation: string;
+  top_3_gaps: string[];
+  source: string;
+  analyzed_at: string;
+}
