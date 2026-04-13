@@ -206,6 +206,13 @@ app.include_router(
     tags=["Admin"],
 )
 
+from .api import resume_analysis
+app.include_router(
+    resume_analysis.router,
+    prefix=f"{api_prefix}/resume-analysis",
+    tags=["Resume Analysis"],
+)
+
 
 # Global exception handler
 @app.exception_handler(Exception)
