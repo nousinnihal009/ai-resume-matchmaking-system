@@ -4,6 +4,7 @@ Base Pydantic schemas with common configurations.
 from datetime import datetime
 from typing import Optional, Any, Dict, List, Generic, TypeVar
 from pydantic import BaseModel, Field
+from pydantic.alias_generators import to_camel
 from uuid import UUID
 
 T = TypeVar("T")
@@ -13,6 +14,8 @@ class BaseSchema(BaseModel):
     """Base schema with common configurations."""
     model_config = {
         "from_attributes": True,
+        "alias_generator": to_camel,
+        "populate_by_name": True,
         "json_encoders": {
             datetime: lambda v: v.isoformat(),
             UUID: str,
