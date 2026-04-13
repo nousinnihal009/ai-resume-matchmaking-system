@@ -111,8 +111,9 @@ class MatchingEngine:
             job_preferred = set(job_data.get('preferred_skills', []))
 
             # Calculate skill-based scores
+            context_skills = resume_data.get('context_aware_skills', {})
             skill_score, matched_skills, missing_skills = self._calculate_skill_score(
-                resume_skills, job_required, job_preferred
+                resume_skills, job_required, job_preferred, context_skills
             )
 
             # Calculate experience score
@@ -161,7 +162,8 @@ class MatchingEngine:
         self,
         resume_skills: set,
         job_required: set,
-        job_preferred: set
+        job_preferred: set,
+        context_skills: dict = None
     ) -> Tuple[float, set, set]:
         """
         Calculate skill-based matching score.
@@ -190,10 +192,36 @@ class MatchingEngine:
             all_job_skills = job_required | job_preferred
             additional_skills = resume_skills - all_job_skills
             if additional_skills:
-                overall_skill_score = min(1.0, overall_skill_score + self.skill_weights['bonus'])
+                overall_skill_score += self.skill_weights['bonus']
 
             matched_skills = matched_required | matched_preferred
             missing_skills = missing_required | missing_preferred
+
+            # ── Context-aware skill scoring ───────────────────────────────────
+            context_skills = context_skills or {}
+            context_bonus = 0.0
+            if context_skills and matched_skills:
+                for skill in matched_skills:
+                    skill_context = context_skills.get(
+                        skill, context_skills.get(skill.lower(), "")
+                    )
+                    context_lower = skill_context.lower()
+                    # Production/scale context = high bonus
+                    if any(k in context_lower for k in [
+                        "production", "scale", "million", "billion",
+                        "lead", "architect", "design"
+                    ]):
+                        context_bonus += 0.05
+                    # Real project context = moderate bonus
+                    elif any(k in context_lower for k in [
+                        "built", "developed", "implemented", "deployed"
+                    ]):
+                        context_bonus += 0.02
+
+                # Cap context bonus at 0.15
+                context_bonus = min(context_bonus, 0.15)
+            
+            overall_skill_score = min(1.0, overall_skill_score + context_bonus)
 
             return overall_skill_score, matched_skills, missing_skills
 
