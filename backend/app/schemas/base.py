@@ -22,8 +22,12 @@ class BaseSchema(BaseModel):
         }
     }
 
+    def model_dump(self, *, by_alias: bool = True, **kwargs) -> dict:
+        """Override to default by_alias=True for camelCase output."""
+        return super().model_dump(by_alias=by_alias, **kwargs)
 
-class APIResponse(BaseModel, Generic[T]):
+
+class APIResponse(BaseSchema, Generic[T]):
     """
     Standard API response envelope used by all endpoints.
 
