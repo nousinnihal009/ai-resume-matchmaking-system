@@ -20,6 +20,7 @@ import {
   MapPin,
   Building,
   DollarSign,
+  Zap,
 } from 'lucide-react';
 import { validateResumeFile } from '@/utils/validation';
 import { formatDate, formatFileSize, formatSalary } from '@/utils/helpers';
@@ -293,6 +294,7 @@ export function StudentDashboard() {
 }
 
 function ResumeCard({ resume }: { resume: Resume }) {
+  const navigate = useNavigate();
   return (
     <Card className="p-6">
       <div className="flex items-start justify-between">
@@ -308,6 +310,18 @@ function ResumeCard({ resume }: { resume: Resume }) {
           <div>
             <div className="text-sm font-medium mb-2">Extracted Skills:</div>
             <SkillBadgeList skills={resume.extractedSkills} maxDisplay={10} />
+          </div>
+
+          <div className="mt-4 pt-4 border-t">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => navigate(`/student/resume/${resume.id}/analysis`)}
+              className="gap-1.5 text-xs"
+            >
+              <Zap className="w-3.5 h-3.5" />
+              Analyze
+            </Button>
           </div>
         </div>
       </div>
