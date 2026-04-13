@@ -42,9 +42,17 @@ async function apiRequest<T>(
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        window.dispatchEvent(new Event('auth:unauthorized'));
+      }
+      let errorMsg = data.error || data.detail;
+      if (typeof errorMsg !== 'string' && errorMsg) {
+        errorMsg = Array.isArray(errorMsg) ? errorMsg[0]?.msg : JSON.stringify(errorMsg);
+      }
+      
       return {
         success: false,
-        error: data.error || `HTTP ${response.status}: ${response.statusText}`,
+        error: errorMsg || `HTTP ${response.status}: ${response.statusText}`,
         timestamp: new Date().toISOString(),
       };
     }
@@ -86,7 +94,7 @@ export const authAPI = {
 
     if (response.success && response.data) {
       // Store token in localStorage
-      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('access_token', response.data.accessToken);
       localStorage.setItem('current_user', JSON.stringify(response.data.user));
     }
 
@@ -103,7 +111,7 @@ export const authAPI = {
 
     if (response.success && response.data) {
       // Store token in localStorage
-      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('access_token', response.data.accessToken);
       localStorage.setItem('current_user', JSON.stringify(response.data.user));
     }
 
@@ -151,16 +159,24 @@ export const resumeAPI = {
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 401) {
+          window.dispatchEvent(new Event('auth:unauthorized'));
+        }
+        let errorMsg = data.error || data.detail;
+        if (typeof errorMsg !== 'string' && errorMsg) {
+          errorMsg = Array.isArray(errorMsg) ? errorMsg[0]?.msg : JSON.stringify(errorMsg);
+        }
+
         return {
           success: false,
-          error: data.error || `HTTP ${response.status}: ${response.statusText}`,
+          error: errorMsg || `HTTP ${response.status}: ${response.statusText}`,
           timestamp: new Date().toISOString(),
         };
       }
 
       return {
         success: true,
-        data: data.data,
+        data: data.data?.resume || data.data,
         timestamp: data.timestamp || new Date().toISOString(),
       };
     } catch (error) {
