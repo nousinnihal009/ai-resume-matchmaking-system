@@ -36,8 +36,8 @@ export interface RecruiterProfile extends User {
 
 export interface AuthResponse {
   user: User;
-  access_token: string;
-  token_type: string;
+  accessToken: string;
+  tokenType: string;
 }
 
 // ==================== Resume Models ====================
