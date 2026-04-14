@@ -35,6 +35,7 @@ import {
   CategoryScoreBar,
   SectionCard,
 } from '@/app/components/analysis';
+import { TailoringResults } from '@/app/components/analysis/TailoringResults';
 import { Button } from '@/app/components/ui/button';
 import { Textarea } from '@/app/components/ui/textarea';
 import { Badge } from '@/app/components/ui/badge';
@@ -684,45 +685,63 @@ export default function ResumeAnalysisPage() {
             >
               <div className="flex flex-col gap-5 pt-4">
                 {!tailoring ? (
-                  <>
-                    <p className="text-sm text-gray-500">
-                      Paste a job description below and get AI-powered
-                      suggestions to tailor your resume specifically for
-                      that role — missing keywords, bullet rewrites, and
-                      a customized professional summary.
-                    </p>
-                    <Textarea
-                      placeholder="Paste the job description here... (minimum 50 characters)"
-                      value={jobDescription}
-                      onChange={e => setJobDescription(e.target.value)}
-                      className="min-h-32 text-sm"
-                    />
-                    <Button
-                      onClick={handleTailor}
-                      disabled={isTailoring || jobDescription.length < 50}
-                      className="self-start gap-2"
-                    >
-                      {isTailoring ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                          Analyzing fit...
-                        </>
-                      ) : (
-                        <>
-                          <Zap className="w-4 h-4" />
-                          Get Tailored Insights
-                        </>
-                      )}
-                    </Button>
-                  </>
+                  <div className="flex flex-col gap-5 pt-4">
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
+                      <h4 className="text-sm font-semibold text-gray-800 mb-1">
+                        Tailor Your Resume for a Specific Job
+                      </h4>
+                      <p className="text-sm text-gray-500 mb-4">
+                        Paste the job description below. Our AI will analyze the fit,
+                        identify missing keywords, suggest bullet rewrites, and
+                        generate a tailored professional summary — all specific to
+                        this role.
+                      </p>
+                      <Textarea
+                        placeholder="Paste the full job description here...&#10;(e.g. We are looking for a Senior Python Engineer with experience in&#10;FastAPI, PostgreSQL, and microservices architecture...)"
+                        value={jobDescription}
+                        onChange={e => setJobDescription(e.target.value)}
+                        className="min-h-40 text-sm resize-none bg-white mb-3"
+                      />
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-gray-400">
+                          {jobDescription.length} characters
+                          {jobDescription.length < 50 && jobDescription.length > 0
+                            ? ' — need at least 50'
+                            : ''}
+                        </p>
+                        <Button
+                          onClick={handleTailor}
+                          disabled={isTailoring || jobDescription.length < 50}
+                          className="gap-2"
+                        >
+                          {isTailoring ? (
+                            <>
+                              <RefreshCw className="w-4 h-4 animate-spin" />
+                              Analyzing fit...
+                            </>
+                          ) : (
+                            <>
+                              <Zap className="w-4 h-4" />
+                              Get Tailored Insights
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
-                  <TailoringResults
-                    tailoring={tailoring}
-                    onReset={() => {
-                      setTailoring(null);
-                      setJobDescription('');
-                    }}
-                  />
+                  <div className="pt-4">
+                    <TailoringResults
+                      tailoring={tailoring}
+                      templateSuggestions={
+                        report?.design?.template_suggestions ?? []
+                      }
+                      onReset={() => {
+                        setTailoring(null);
+                        setJobDescription('');
+                      }}
+                    />
+                  </div>
                 )}
               </div>
             </SectionCard>
@@ -734,151 +753,3 @@ export default function ResumeAnalysisPage() {
   );
 }
 
-
-// ── Tailoring Results sub-component ───────────────────────────────────
-
-function TailoringResults({
-  tailoring,
-  onReset,
-}: {
-  tailoring: TailoringReport;
-  onReset: () => void;
-}) {
-  const fitColor = tailoring.overall_fit === 'strong'
-    ? 'text-green-600 bg-green-50'
-    : tailoring.overall_fit === 'moderate'
-    ? 'text-amber-600 bg-amber-50'
-    : 'text-red-600 bg-red-50';
-
-  return (
-    <div className="flex flex-col gap-5">
-      {/* Fit score */}
-      <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-        <div className="flex flex-col items-center">
-          <span className="text-3xl font-bold text-blue-600">
-            {tailoring.tailoring_score}%
-          </span>
-          <span className="text-xs text-gray-500">Job Fit</span>
-        </div>
-        <div className="flex-1">
-          <span className={cn(
-            'text-xs font-semibold px-2.5 py-1 rounded-full capitalize',
-            fitColor
-          )}>
-            {tailoring.overall_fit} match
-          </span>
-          <p className="text-sm text-gray-600 mt-1">
-            {tailoring.fit_explanation}
-          </p>
-        </div>
-      </div>
-
-      {/* Top 3 gaps */}
-      {(tailoring.top_3_gaps?.length ?? 0) > 0 && (
-        <div>
-          <h4 className="text-sm font-semibold text-red-700 mb-2">
-            🎯 Critical Gaps
-          </h4>
-          {tailoring.top_3_gaps.map((gap, i) => (
-            <p key={i} className="text-sm text-gray-600 bg-red-50 p-2.5 rounded mb-1">
-              • {gap}
-            </p>
-          ))}
-        </div>
-      )}
-
-      {/* Missing keywords */}
-      {(tailoring.missing_keywords?.length ?? 0) > 0 && (
-        <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">
-            Missing Keywords
-          </h4>
-          <div className="flex flex-wrap gap-1.5">
-            {tailoring.missing_keywords.slice(0, 15).map((kw, i) => (
-              <span
-                key={i}
-                className="text-xs bg-red-100 text-red-700 px-2.5 py-1 rounded-full"
-              >
-                {kw}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Keywords present */}
-      {(tailoring.keywords_present?.length ?? 0) > 0 && (
-        <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">
-            ✓ Keywords Already Present
-          </h4>
-          <div className="flex flex-wrap gap-1.5">
-            {tailoring.keywords_present.slice(0, 10).map((kw, i) => (
-              <span
-                key={i}
-                className="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full"
-              >
-                {kw}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Bullet rewrites */}
-      {(tailoring.bullet_rewrites?.length ?? 0) > 0 && (
-        <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">
-            Suggested Bullet Rewrites
-          </h4>
-          {tailoring.bullet_rewrites.slice(0, 3).map((rewrite, i) => (
-            <div key={i} className="border border-gray-200 rounded-lg p-3 mb-2">
-              <p className="text-xs text-red-600 line-through mb-1">
-                {rewrite.original}
-              </p>
-              <p className="text-xs text-green-700 font-medium mb-1">
-                ✓ {rewrite.rewritten}
-              </p>
-              <p className="text-xs text-gray-400 italic">
-                {rewrite.reason}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Tailored summary */}
-      {tailoring.summary_rewrite && (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-semibold text-gray-700">
-              Tailored Professional Summary
-            </h4>
-            <button
-              className="text-xs text-blue-600 hover:underline flex items-center gap-1"
-              onClick={() => {
-                navigator.clipboard.writeText(tailoring.summary_rewrite);
-                toast.success('Summary copied to clipboard!');
-              }}
-            >
-              <Copy className="w-3 h-3" />
-              Copy
-            </button>
-          </div>
-          <p className="text-sm text-gray-700 bg-blue-50 p-3 rounded-lg leading-relaxed">
-            {tailoring.summary_rewrite}
-          </p>
-        </div>
-      )}
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onReset}
-        className="self-start"
-      >
-        Try a Different Job
-      </Button>
-    </div>
-  );
-}
