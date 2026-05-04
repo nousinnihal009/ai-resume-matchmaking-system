@@ -233,11 +233,9 @@ export const jobAPI = {
       experienceLevel: jobData.experienceLevel,
       location: jobData.location,
       locationType: jobData.locationType,
-      salary: jobData.salaryMin && jobData.salaryMax ? {
-        min: jobData.salaryMin,
-        max: jobData.salaryMax,
-        currency: jobData.salaryCurrency,
-      } : undefined,
+      salaryMin: jobData.salaryMin,
+      salaryMax: jobData.salaryMax,
+      salaryCurrency: jobData.salaryCurrency,
     };
 
     return apiRequest<Job>('/jobs', {
