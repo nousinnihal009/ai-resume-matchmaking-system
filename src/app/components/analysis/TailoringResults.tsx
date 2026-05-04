@@ -1,12 +1,12 @@
-"""
-Full tailoring results display.
-
-Layout (4 sections, visually separated):
-  1. HEADER — fit score ring + fit label + explanation + reset button
-  2. KEYWORD ANALYSIS — gap ring + keyword cloud (missing vs present)
-  3. REWRITES — bullet rewrite cards (before/after side by side)
-  4. SUMMARY & TEMPLATES — tailored summary + template showcase
-"""
+/**
+ * Full tailoring results display.
+ *
+ * Layout (4 sections, visually separated):
+ *   1. HEADER — fit score ring + fit label + explanation + reset button
+ *   2. KEYWORD ANALYSIS — gap ring + keyword cloud (missing vs present)
+ *   3. REWRITES — bullet rewrite cards (before/after side by side)
+ *   4. SUMMARY & TEMPLATES — tailored summary + template showcase
+ */
 import { RotateCcw } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Separator } from '@/app/components/ui/separator';
