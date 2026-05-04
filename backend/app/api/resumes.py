@@ -63,23 +63,30 @@ async def upload_resume(
         with open(file_path, "wb") as f:
             f.write(file_content)
 
-        # Create resume record with status='processing'
+        # Extract text from the uploaded file
+        from ..pipeline.text_extraction import text_extraction_service
+        from ..pipeline.skill_extraction import skill_extractor
+        extracted_text = await text_extraction_service.extract_text(str(file_path))
+
+        # Extract skills from text
+        skill_data = await skill_extractor.extract_skills(extracted_text)
+
+        # Create resume record with extracted data
         from ..db.models import Resume
         resume = Resume(
             user_id=current_user.id,
             file_name=file.filename,
             file_url=str(file_path),
             file_size=len(file_content),
-            status="processing",
+            extracted_text=extracted_text,
+            extracted_skills=skill_data.get("extracted_skills", []),
+            status="completed",
+            extra_metadata={
+                "skill_confidence": skill_data.get("confidence"),
+                "skill_categories": skill_data.get("categories", {}),
+            },
         )
         db.add(resume)
-        await db.commit()
-        await db.refresh(resume)
-
-        # Mark resume as completed immediately (no Celery/Redis required)
-        # In production, this would dispatch to a Celery worker for
-        # async text extraction and skill parsing.
-        resume.status = "completed"
         await db.commit()
         await db.refresh(resume)
 
