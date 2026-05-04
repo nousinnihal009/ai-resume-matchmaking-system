@@ -19,8 +19,8 @@ class UserBase(BaseSchema):
     updated_at: datetime
 
 
-class UserCreate(BaseModel):
-    """Schema for creating a user."""
+class UserCreate(BaseSchema):
+    """Schema for creating a new user."""
     email: str = Field(..., min_length=1, max_length=255)
     password: str = Field(..., min_length=8)
     name: str = Field(..., min_length=1, max_length=255)
@@ -32,7 +32,7 @@ class UserCreate(BaseModel):
     position: Optional[str] = None
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(BaseSchema):
     """Schema for updating a user."""
     email: Optional[str] = Field(None, min_length=1, max_length=255)
     name: Optional[str] = Field(None, min_length=1, max_length=255)
@@ -72,15 +72,15 @@ class AuthResponse(BaseSchema):
     token_type: str = "bearer"
 
 
-class LoginRequest(BaseModel):
-    """Login request schema."""
+class LoginRequest(BaseSchema):
+    """Schema for login request."""
     email: str = Field(..., min_length=1, max_length=255)
     password: str = Field(..., min_length=1)
     role: str = Field(..., pattern="^(student|recruiter|admin)$")
 
 
-class SignupRequest(BaseModel):
-    """Signup request schema."""
+class SignupRequest(BaseSchema):
+    """Schema for signup request."""
     model_config = {"populate_by_name": True}
 
     email: str = Field(..., min_length=1, max_length=255)
