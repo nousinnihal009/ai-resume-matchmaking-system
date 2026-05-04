@@ -32,7 +32,7 @@ class JobBase(BaseSchema):
     updated_at: datetime
 
 
-class JobCreate(BaseModel):
+class JobCreate(BaseSchema):
     """Schema for creating a job."""
     title: str = Field(..., min_length=1, max_length=255)
     company: str = Field(..., min_length=1, max_length=255)
@@ -47,7 +47,7 @@ class JobCreate(BaseModel):
     salary_currency: str = Field(default="USD", min_length=3, max_length=3)
 
 
-class JobUpdate(BaseModel):
+class JobUpdate(BaseSchema):
     """Schema for updating a job."""
     title: Optional[str] = Field(None, min_length=1, max_length=255)
     company: Optional[str] = Field(None, min_length=1, max_length=255)
@@ -65,7 +65,7 @@ class JobUpdate(BaseModel):
     extra_metadata: Optional[dict] = None
 
 
-class JobPostingForm(BaseModel):
+class JobPostingForm(BaseSchema):
     """Job posting form schema (matches frontend)."""
     title: str = Field(..., min_length=1, max_length=255)
     company: str = Field(..., min_length=1, max_length=255)
@@ -80,7 +80,7 @@ class JobPostingForm(BaseModel):
     salary_currency: str = Field(default="USD", min_length=3, max_length=3)
 
 
-class JobFilters(BaseModel):
+class JobFilters(BaseSchema):
     """Filters for job queries."""
     status: Optional[List[str]] = None
     experience_level: Optional[List[str]] = None
